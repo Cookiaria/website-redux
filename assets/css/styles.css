@@ -1,19 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
 @import url('https://www.nerdfonts.com/assets/css/webfont.css');
 
+
+
 body {
-    display: block;
-    height: 100%;
+    display: block; 
     background-color: #191A1C;
     margin: 0;
-    padding: 0 16px;
-    height: 100vh;
+    height: 100%;
 }
 
 p {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    font-size: 20px;
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+li {
+    margin-top: 6px;
+    padding-bottom: 6px;
+    margin-left: 24px;
 }
 
 a {
@@ -26,12 +31,23 @@ h3,
 h4,
 h5,
 h6 {
-    margin-top: 0;
-    margin-bottom: 0;
-    font-weight: normal;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    font-weight: 600;
 }
 
-/* header */ 
+
+.ca-background-image {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: -1;
+    img {
+        width: 100%;
+    }
+}
+
+/* header */
 
 .ca-header-container {
     max-width: 820px;
@@ -54,9 +70,11 @@ a.ca-tablinks:nth-child(1) {
     padding: 3px 8px;
     color: white;
     position: relative;
-    border: 1px rgb(55, 54, 54) solid;
+    border: 1px rgba(255, 255, 255, 0.25) solid;
+    border-bottom: 1px solid #1B1C1F;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
+    background-color: #1C1D1F;
     bottom: 2px;
 }
 
@@ -81,8 +99,10 @@ a.ca-tablinks:nth-child(1) {
 .ca-header-logo {
     vertical-align: middle;
     padding: 8px;
+    user-select: none;
+
     img {
-        height: 96px; 
+        height: 96px;
     }
 }
 
@@ -94,19 +114,13 @@ a.ca-tablinks:nth-child(1) {
     text-align: left;
 }
 
-.ca-cookimoji {
-    width: 1.6em;
-    height: 1.6em;
-    vertical-align: middle;
-    padding-bottom: 0.2em;
-}
-
 .ca-maincontent {
     max-width: 820px;
     min-width: 480px;
     margin-left: auto;
     margin-right: auto;
-    min-height: calc(80vh - 32px); /* Full height minus footer margin-top */
+    font-size: 20px;
+    min-height: calc(100vh - 230px);
     margin-top: 16px;
     padding: 16px;
     font-family: "Fredoka", serif;
@@ -114,44 +128,109 @@ a.ca-tablinks:nth-child(1) {
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 8px;
     background-color: #1C1D1F;
-    box-sizing: border-box; /* Ensure padding and border are included in the element's total height and width */
+    box-sizing: border-box;
+}
+
+.ca-header-text {    
+    display: flex;
+    align-items: center;
+    p {
+        line-height: 1.6em;
+        margin: 0;
+    }
+}
+
+@-moz-document url-prefix() {
+    .ca-cookimoji {
+        vertical-align: -0.2em;
+    }
+}
+
+.ca-cookimoji {
+    height: 1.6em;
+    vertical-align: middle; 
+    display: inline-block;
+}
+
+.ca-maincontent > img {
+    border-radius: 16px;
+    display: block;
+    margin: 0 auto;
+    max-width: 75%;
+    min-width: 25%;
+}
+
+.ca-maincontent > .ca-image-left {
+    float: left;
+    padding-right: 20px;
 }
 
 .ca-footer {
     font-family: "Fredoka", serif;
     color: white;
     margin-top: 16px;
-    h2 {
-        font-weight: 500;
+}
+
+.ca-separator {
+    display: inline-block;
+    width: 0; 
+    height: 25px; 
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+    border-right: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 2px;
+    margin: 0 10px; 
+}
+
+.ca-footer-links {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    a {
+        text-decoration: none;
+        color: white;
+        i {
+            padding: 0 6px;
+            transition-duration: 250ms;
+            font-size: 28px;
+            padding-bottom: 16px;
+        }
     }
 }
 
+.ca-footer-links > a > i:hover {
+    transition-duration: 250ms;
+    color: #f86;
+}
+
 .ca-rainbow {
-    background: linear-gradient(
-      90deg,
-      #ffadad,
-      #ffd6a5,
-      #fdffb6,
-      #caffbf,
-      #9bf6ff,
-      #a0c4ff,
-      #bdb2ff,
-      #ffc6ff,
-      #ffadad
-    );
+    background: linear-gradient(90deg,
+            #FF6F6F 0%,
+            #FFB74E 10%,
+            #FFF55E 20%,
+            #B0FF6C 30%,
+            #63FF79 40%,
+            #71E5FF 50%,
+            #8A9FFF 60%,
+            #A589F6 70%,
+            #F47CFF 80%,
+            #FF6CC7 90%,
+            #FF6F6F 100%);
     background-size: 200% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: gradientShift 5s linear infinite;
-  }
-  
-  @keyframes gradientShift {
-    0% {
-      background-position: 0% 50%;
-    }
-    100% {
-      background-position: 200% 50%;
-    }
-  }
+    animation: colormatic 3s linear infinite;
+}
 
+@keyframes colormatic {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 200% 50%;
+    }
+}

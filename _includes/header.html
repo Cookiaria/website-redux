@@ -1,6 +1,12 @@
 <script>
+    let lastRandomLine = '';
     function getRandomHeaderLine(lines) {
-      return lines[Math.floor(Math.random() * lines.length)];
+      let randomLine;
+      do {
+        randomLine = lines[Math.floor(Math.random() * lines.length)];
+      } while (randomLine === lastRandomLine)
+      lastRandomLine = randomLine;
+      return randomLine;
     }
   
     async function randomHeader() {
@@ -25,26 +31,38 @@
     #headerrandom {
         font-size: 16px;
     }
+
     .nf {
         font-size: 16px;
     }
+
+    .ca-logo-text > h2, .ca-logo-text > p {
+        padding: 0;
+        margin: 0;
+    }
+    .ca-logo-text > h2 {
+        font-size: 32px;
+    }
+
 </style>
 
 <div class="ca-header-container">
     <div class="ca-header-tabs">
         <a href="/" class="ca-tablinks"><i class="nf nf-fa-home"></i> Home</a>
         <a href="https://notes.cookiaria.lol" class="ca-tablinks"><i class="nf nf-md-pencil"></i> Notes</a>
-        <a href="/404" class="ca-tablinks"><i class="nf nf-fa-oil_can"></i> SUPER SECRET DEBUG MODE</a>
+        <a href="/about" class="ca-tablinks"><i class="nf nf-oct-person_fill"></i> About</a>
     </div>
     
     <header class="ca-header">
         <div class="ca-header-logo">
-            <img src="/assets/images/cate.png" onclick="randomHeader()" align="left">
+            <img src="/assets/images/cate.png" onclick="randomHeader()" align="left" draggable="false">
         </div>
     
         <div class="ca-logo-text">
             <h2>Cookiaria Website</h2>
-            <p id="headerrandom"></p>
+            <div class="ca-header-text">
+                <p id="headerrandom"></p>
+            </div>
         </div>
     </header>
 </div>
