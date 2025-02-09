@@ -1,0 +1,53 @@
+---
+layout: 404
+title: Where do you think you're going?
+---
+
+<style>
+    .asdasd {
+        font-family: "Fredoka", serif;
+        color: white;
+        max-width: fit-content;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    h1 {
+        font-weight: 500;
+    }
+</style>
+
+<script>
+    function getRandomLine(lines) {
+      return lines[Math.floor(Math.random() * lines.length)];
+    }
+  
+    async function random404() {
+      const response = await fetch('/assets/404.txt');
+      const text = await response.text();
+      const lines = text.split('\n').filter(line => line.trim() !== '');
+  
+      const randomLine = getRandomLine(lines);
+      const parser = new DOMParser();
+      const dom = parser.parseFromString(randomLine, 'text/html');
+      const element = document.getElementById('random404lol');
+      while (element.firstChild) {
+        element.removeChild(element.firstChild);
+      }
+      element.append(...dom.body.childNodes);
+    }
+  
+    random404();
+</script>
+
+<div class="asdasd">
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h1>Lost? yeah me too</h1>
+    <img src="/assets/images/death.png" width="256" onclick="random404()">
+    <p id="random404lol" class="four04"></p>
+</div>
