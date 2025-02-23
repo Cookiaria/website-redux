@@ -1,32 +1,3 @@
-<script>
-    let lastRandomLine = '';
-    function getRandomHeaderLine(lines) {
-      let randomLine;
-      do {
-        randomLine = lines[Math.floor(Math.random() * lines.length)];
-      } while (randomLine === lastRandomLine)
-      lastRandomLine = randomLine;
-      return randomLine;
-    }
-  
-    async function randomHeader() {
-      const response = await fetch('/assets/headers.txt');
-      const text = await response.text();
-      const lines = text.split('\n').filter(line => line.trim() !== '');
-  
-      const randomLine = getRandomHeaderLine(lines);
-      const parser = new DOMParser();
-      const dom = parser.parseFromString(randomLine, 'text/html');
-      const element = document.getElementById('headerrandom');
-      while (element.firstChild) {
-        element.removeChild(element.firstChild);
-      }
-      element.append(...dom.body.childNodes);
-    }
-  
-    randomHeader();
-</script>
-
 <style>
     #headerrandom {
         font-size: 16px;
@@ -38,34 +9,103 @@
         font-size: 16px;
     }
 
-    .ca-logo-text > h2, .ca-logo-text > p {
+    .ca-logo-text>h2,
+    .ca-logo-text>p {
         padding: 0;
         margin: 0;
     }
-    .ca-logo-text > h2 {
+
+    .ca-logo-text>h2 {
         font-size: 32px;
     }
-
 </style>
 
 <div class="ca-header-container">
     <div class="ca-header-tabs">
-        <a href="/" class="ca-tablinks"><i class="nf nf-fa-home"></i> Home</a>
-        <a href="https://notes.cookiaria.lol" class="ca-tablinks"><i class="nf nf-md-pencil"></i> Notes</a>
-        <a href="/about" class="ca-tablinks"><i class="nf nf-oct-person_fill"></i> About</a>
+        <a href="/" class="ca-tablinks"><i class="nf nf-fa-home"></i> home</a>
+        <a href="/about" class="ca-tablinks"><i class="nf nf-oct-person_fill"></i> about</a>
+        <a href="/projects" class="ca-tablinks"><i class="nf nf-fa-sticky_note"></i> projects</a>
     </div>
-    
+
     <header class="ca-header">
         <div class="ca-header-logo">
             <img src="/assets/images/cate.png" onclick="randomHeader()" align="left" draggable="false">
         </div>
-    
+
         <div class="ca-logo-text">
-            <h2>Cookiaria Website</h2>
+            <h2>cookiaria{% if page.title %} - {{ page.title }}{% else %} website{% endif %}</h2>
             <div class="ca-header-text">
                 <p id="headerrandom"></p>
             </div>
         </div>
     </header>
-
 </div>
+
+<script>
+    let lastRandomLine = '';
+
+    async function fetchHeaderLines() {
+        try {
+            const response = await fetch('/assets/headers.txt');
+            const text = await response.text();
+            return text.split('\n').map(line => line.trim()).filter(line => line);
+        } catch (error) {
+            console.error('Error fetching header lines:', error);
+            return [];
+        }
+    }
+
+    function getRandomHeaderLine(lines) {
+        if (lines.length === 0) return null;
+
+        let randomLine;
+        let attempts = 0;
+        const maxAttempts = 100;
+
+        do {
+            randomLine = lines[Math.floor(Math.random() * lines.length)];
+            attempts++;
+        } while (randomLine === lastRandomLine && attempts < maxAttempts);
+
+        lastRandomLine = randomLine;
+        return randomLine;
+    }
+
+    async function randomHeader(prefix = '') {
+        const element = document.getElementById('headerrandom');
+        if (!element) {
+            console.warn('Element with ID "headerrandom" not found.');
+            return;
+        }
+
+        if (prefix.trim()) {
+            // If a prefix is provided, parse it as HTML and replace content
+            const parser = new DOMParser();
+            const dom = parser.parseFromString(prefix, 'text/html');
+            element.innerHTML = ''; // Clear just before replacing
+            element.append(...dom.body.childNodes);
+            return;
+        }
+
+        // Otherwise, fetch a random line from headers.txt
+        const lines = await fetchHeaderLines();
+        const randomLine = getRandomHeaderLine(lines);
+
+        if (!randomLine) {
+            console.warn('No valid header line found.');
+            return;
+        }
+
+        // Parse the random line as HTML and replace content
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(randomLine, 'text/html');
+        element.innerHTML = ''; // Clear just before replacing
+        element.append(...dom.body.childNodes);
+    }
+
+    // Attach to the global object for console access
+    window.randomHeader = randomHeader;
+
+    // Call by default with an empty prefix
+    randomHeader();
+</script>

@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap');
 @import url('https://www.nerdfonts.com/assets/css/webfont.css');
 
-
-
 body {
+    font-family: "Fredoka", serif;
     display: block; 
     background-color: #191A1C;
     margin: 0;
@@ -25,6 +25,10 @@ a {
     color: #f86;
 }
 
+hr {
+    color: rgba(255, 255, 255, 0.15)
+}
+
 h1,
 h2,
 h3,
@@ -36,14 +40,22 @@ h6 {
     font-weight: 600;
 }
 
+.ca-jp {
+    font-family: "M PLUS Rounded 1c", serif;
+    font-weight: bold;
+}
 
 .ca-background-image {
     position: fixed;
     top: 0;
-    width: 100%;
+    height: 100vh;
     z-index: -100;
+    left: 50%;
+    transform: translateX(-50%);
+    background-size: 100% auto;
+    background-position: center;
     img {
-        width: 100%
+        height: 100vh
     }
 }
 
@@ -64,7 +76,6 @@ a.ca-tablinks:nth-child(1) {
 }
 
 .ca-tablinks {
-    font-family: "Fredoka", serif;
     text-decoration: none;
     margin-right: 0;
     padding: 3px 8px;
@@ -79,7 +90,6 @@ a.ca-tablinks:nth-child(1) {
 }
 
 .ca-header {
-    font-family: "Fredoka", serif;
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 8px;
@@ -97,7 +107,6 @@ a.ca-tablinks:nth-child(1) {
 }
 
 .ca-header {
-    background-image: url(/assets/images/pukeko.png);
     background-size:contain;
     background-position: right;
     background-repeat: no-repeat;
@@ -107,7 +116,6 @@ a.ca-tablinks:nth-child(1) {
     vertical-align: middle;
     padding: 8px;
     user-select: none;
-    background-color: #1B1C1E;
     img {
         height: 96px;
     }
@@ -131,7 +139,6 @@ a.ca-tablinks:nth-child(1) {
     min-height: calc(100vh - 230px);
     margin-top: 16px;
     padding: 16px;
-    font-family: "Fredoka", serif;
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 8px;
@@ -152,9 +159,7 @@ a.ca-tablinks:nth-child(1) {
 }
 
 .ca-cookimoji {
-    height: 1.6em;
-    vertical-align: middle; 
-    display: inline-block;
+    height: 26px;
     padding-left: 3px;
     padding-right: 3px;
     margin-top: -4px;
@@ -175,7 +180,6 @@ a.ca-tablinks:nth-child(1) {
 }
 
 .ca-footer {
-    font-family: "Fredoka", serif;
     color: white;
     margin-top: 16px;
 }
@@ -242,4 +246,8 @@ a.ca-tablinks:nth-child(1) {
     100% {
         background-position: 200% 50%;
     }
+}
+
+.ca-logo-text > h2 {
+    user-select: none;
 }

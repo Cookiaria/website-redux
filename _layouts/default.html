@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/assets/css/styles.css">
     <link rel="icon" type="image/png" href="/assets/images/cate.png">
 
-    <title>{{ page.title }}</title>
+    <title>cookiaria{% if page.title %} - {{ page.title }}{% else %} website{% endif %}</title>
 </head>
 
 <body>
@@ -23,11 +23,13 @@
         </div>
 
         {% include footer.html %}
+        
     </div>
 
     <div class="ca-background-image">
         <img src="/assets/images/low-poly-grid-haikei.svg">
     </div>
+    
 </body>
 
 </html>
