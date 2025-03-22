@@ -13,21 +13,22 @@
 
 <body>
 
-    <div>
+    <div id="ca-everything">
+        <main>
+            {% include header.html %}
 
-        {% include header.html %}
+            <div class="ca-maincontent">
+                {{ content }}
+            </div>
 
-        <div>
-            {{ content }}
-        </div>
-
-
+        </main>
     </div>
 
     <div class="ca-background-image">
-        <img src="/assets/images/low-poly-grid-haikei.svg">
     </div>
 
+    <script src="/assets/js/wavytext.js"></script>
+    <script src="/assets/js/scale.js"></script>
 </body>
 
 </html>

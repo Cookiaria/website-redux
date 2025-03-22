@@ -52,6 +52,10 @@ main {
     min-width: 420px;
 }
 
+hr {
+    margin:32px 0;
+}
+
 .ca-jp {
     font-family: "M PLUS Rounded 1c", serif;
     font-weight: bold;
@@ -61,19 +65,14 @@ main {
     position: fixed;
     top: 0;
     height: 100vh;
+    width: 100%;
     z-index: -100;
     left: 50%;
     transform: translateX(-50%);
-    background-size: 100% auto;
     background-position: center;
-
-    img {
-        height: 100vh
-    }
+    background-size: 200px;
+    background-image: url(/assets/images/cattile.png);
 }
-
-/* header */
-
 
 #headerrandom {
     font-size: 16px;
@@ -118,8 +117,16 @@ a.ca-tablinks:nth-child(1) {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     background-color: #1C1D1F;
-    bottom: 2px;
+    bottom: 3px;
+    transition-duration: 0.1s;
 }
+
+.ca-tablinks:hover {    
+    bottom: 6px;
+    border-bottom: 1px rgba(255, 255, 255, 0.25) solid;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}   
 
 .ca-header {
     color: white;
@@ -193,7 +200,7 @@ a.ca-tablinks:nth-child(1) {
 }
 
 .ca-cookimoji {
-    height: 26px;
+    height: 1.4em;
     padding-left: 3px;
     padding-right: 3px;
     margin-top: -4px;
@@ -208,7 +215,7 @@ a.ca-tablinks:nth-child(1) {
     min-width: 25%;
 }
 
-.ca-maincontent>.ca-image-left {
+.ca-maincontent > .ca-image-left {
     float: left;
     padding-right: 20px;
 }
@@ -237,11 +244,9 @@ a.ca-tablinks:nth-child(1) {
     max-width: fit-content;
     margin-left: auto;
     margin-right: auto;
-
     a {
         text-decoration: none;
         color: white;
-
         i {
             padding: 0 6px;
             transition-duration: 250ms;
@@ -251,9 +256,41 @@ a.ca-tablinks:nth-child(1) {
     }
 }
 
-.ca-footer-links>a>i:hover {
-    transition-duration: 250ms;
+.ca-footer-links >  a:hover {
+    text-decoration: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.ca-header-tabs > a:hover {
     color: #f86;
+    text-decoration: none;
+}
+
+.ca-footer-links>a {
+    transition-duration: 250ms;
+    
+    .nf-dev-github:hover {
+        color: #606FC1;
+    }
+    .nf-fae-butterfly:hover {
+        color: #1788FE;
+    }
+    .nf-fa-youtube:hover {
+        color: #FE0707;
+    }
+    .nf-fa-house_chimney:hover {
+        color: rgb(255, 151, 65);
+    }
+    .nf-fa-steam:hover {
+        color: #217AA7;
+    }
 }
 
 .ca-rainbow {
@@ -273,7 +310,7 @@ a.ca-tablinks:nth-child(1) {
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: colormatic 3s linear infinite;
+    animation: colormatic 1.5s linear infinite;
 }
 
 @keyframes colormatic {
@@ -288,4 +325,22 @@ a.ca-tablinks:nth-child(1) {
 
 .ca-logo-text>h2 {
     user-select: none;
+}
+
+/* --- wavy letters! --- */ 
+
+
+.ca-text-wavy span {
+    display: inline-block;
+    animation: wave 0.5s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+@keyframes wave {
+    0%, 100% {
+        transform: translateY(2px);
+    }
+
+    50% {
+        transform: translateY(-2px);
+    }
 }

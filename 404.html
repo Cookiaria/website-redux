@@ -4,53 +4,54 @@ title: 404
 ---
 
 <style>
-    .asdasd {
-        font-family: "Fredoka", serif;
-        color: white;
-        max-width: fit-content;
-        margin: 0 auto;
-        text-align: center;
-        h1 {
-          font-size: 48px;
-        }
-    }
+  .asdasd {
+    font-family: "Fredoka", serif;
+    color: white;
+    max-width: fit-content;
+    margin: auto auto;
+    text-align: center;
 
     h1 {
-        font-weight: 500;
+      font-size: 48px;
     }
+  }
+
+  h1 {
+    font-weight: 500;
+  }
+
+  .asdasd>img {
+    width: 480px;
+    margin: 0 -192px 32px -192px;
+    image-rendering: pixelated;
+  }
 </style>
 
 <script>
-    function getRandomLine(lines) {
-      return lines[Math.floor(Math.random() * lines.length)];
+  function getRandomLine(lines) {
+    return lines[Math.floor(Math.random() * lines.length)];
+  }
+
+  async function random404() {
+    const response = await fetch('/assets/404.txt');
+    const text = await response.text();
+    const lines = text.split('\n').filter(line => line.trim() !== '');
+
+    const randomLine = getRandomLine(lines);
+    const parser = new DOMParser();
+    const dom = parser.parseFromString(randomLine, 'text/html');
+    const element = document.getElementById('random404lol');
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
     }
-  
-    async function random404() {
-      const response = await fetch('/assets/404.txt');
-      const text = await response.text();
-      const lines = text.split('\n').filter(line => line.trim() !== '');
-  
-      const randomLine = getRandomLine(lines);
-      const parser = new DOMParser();
-      const dom = parser.parseFromString(randomLine, 'text/html');
-      const element = document.getElementById('random404lol');
-      while (element.firstChild) {
-        element.removeChild(element.firstChild);
-      }
-      element.append(...dom.body.childNodes);
-    }
-  
-    random404();
+    element.append(...dom.body.childNodes);
+  }
+
+  random404();
 </script>
 
 <div class="asdasd">
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <h1>Lost? yeah me too</h1>
-    <img src="/assets/images/death.png" width="256" onclick="random404()">
-    <p id="random404lol" class="four04"></p>
+  <h1>404 - <span class="ca-text-wavy" style="font-weight: 600;">Not here!</span></h1>
+  <img src="/assets/images/death.png" onclick="random404()">
+  <p id="random404lol" class="four04"></p>
 </div>
