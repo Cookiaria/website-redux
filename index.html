@@ -21,6 +21,10 @@ description: welcome to my personal website thing!
         font-size: 0.8em;
         opacity: 0.75;
     }
+
+    #speen {
+        user-select: none;
+    }
 </style>
 
 <div class="ca-aboutme centerpls">
@@ -52,14 +56,21 @@ description: welcome to my personal website thing!
 
     <input type="checkbox" id="spinner" hidden>
     <label class="btn" for="spinner">
-        <img src="/assets/images/bean.png" id="speen" width="200">
+        <img src="/assets/images/bean.png" id="speen" width="200" draggable="false">
     </label>
 
     <script>
+        let rotation = 0; 
+        let speed = 10;
+
         document.querySelector("#speen").addEventListener("click", function () {
-            this.style.animation = "none";
-            void this.offsetWidth;
-            this.style.animation = "spin 1s cubic-bezier(0.45, 0, 0.55, 1)";
+            rotation += 360; 
+
+            this.style.transition = `transform ${speed}s cubic-bezier(0.25, 1, 0.5, 1)`;
+            this.style.transform = `rotate(${rotation}deg)`;
+
+
+            speed = Math.min(speed + 0.1, 10); 
         });
     </script>
 
