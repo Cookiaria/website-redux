@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Add a throbber element
             const throbber = document.createElement('div');
             throbber.className = 'throbber';
-            throbber.innerHTML = '<img src="/assets/images/cate.png" alt="Loading..." />';
+            throbber.innerHTML = '<img src="/assets/images/ball.gif" alt="Loading..." />';
             throbber.style.display = 'none'; // Initially hidden
             overlayContent.appendChild(throbber);
 
