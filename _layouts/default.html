@@ -8,6 +8,16 @@
     <link rel="stylesheet" href="/assets/css/styles.css">
     <link rel="icon" type="image/png" href="/assets/images/cate.png">
 
+    <meta content="cookiaria website" property="og:title">
+
+    {% if page.description %}
+        <meta content="{{ page.description }}" property="og:title">
+    {% endif %}
+
+    <meta content="https://cookiaria.lol" property="og:url">
+    <meta content="/assets/banner.png" property="og:image">
+    <meta name="twitter:card" content="summary_large_image">
+
     <title>cookiaria{% if page.title %} - {{ page.title }}{% else %} website{% endif %}</title>
 </head>
 
@@ -16,18 +26,18 @@
     <div id="ca-everything">
         <main>
             {% include header.html %}
-    
+
             <div class="ca-maincontent">
                 {{ content }}
             </div>
-    
+
             {% include footer.html %}
         </main>
     </div>
 
 
     <div class="ca-background-image">
-        
+
     </div>
 
     <script src="/assets/js/wavytext.js"></script>
