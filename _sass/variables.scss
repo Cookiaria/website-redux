@@ -1,0 +1,29 @@
+$defaultFont: "Fredoka", serif;
+$jpFont: "M PLUS Rounded 1c", sans-serif;
+
+$accentColor: #f86;
+
+$headerColor: #202025;
+$bodyColor: #16161a;
+$backgroundColor: #0F0F12;
+
+/* you can delete these if you don't want blur effects */
+/* $headerBlur: 15px;
+/* $bodyBlur: 10px;
+*/
+
+$rainbowColors: linear-gradient(90deg,
+    #FF6F6F 0%,
+    #FFB74E 10%,
+    #FFF55E 20%,
+    #B0FF6C 30%,
+    #63FF79 40%,
+    #71E5FF 50%,
+    #8A9FFF 60%,
+    #A589F6 70%,
+    #F47CFF 80%,
+    #FF6CC7 90%,
+    #FF6F6F 100%)
+
+/* keep in mind that it must end with the same color as the first*/
+/* be gay, do crime :3 */

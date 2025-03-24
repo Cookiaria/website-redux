@@ -1,6 +1,7 @@
 ---
 layout: default
 description: welcome to my personal website thing!
+data: index
 ---
 
 <style>
@@ -38,7 +39,7 @@ description: welcome to my personal website thing!
     </p><br>
     <p>
         the purpose of this website is to introduce myself, write tutorials, blog about stuff, and learn web development
-        along the way. this is a remake (from scratch) of my old website, and its still barebones, but i hope to learn
+        along the way. this is a remake (from scratch) of my old website, and its still barebones, but i hope to add
         more in the future!
     </p><br>
     <p>
@@ -59,20 +60,7 @@ description: welcome to my personal website thing!
         <img src="/assets/images/bean.png" id="speen" width="200" draggable="false">
     </label>
 
-    <script>
-        let rotation = 0; 
-        let speed = 10;
-
-        document.querySelector("#speen").addEventListener("click", function () {
-            rotation += 360; 
-
-            this.style.transition = `transform ${speed}s cubic-bezier(0.25, 1, 0.5, 1)`;
-            this.style.transform = `rotate(${rotation}deg)`;
-
-
-            speed = Math.min(speed + 0.1, 10); 
-        });
-    </script>
+    <script src="/assets/js/speen.js"></script>
 
     <style>
         @keyframes spin {

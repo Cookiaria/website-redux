@@ -6,15 +6,20 @@ description: probably something you didn't mean to enter, because that doesn't e
 
 <style>
   .asdasd {
-    font-family: "Fredoka", serif;
+    position: relative;
     color: white;
-    max-width: fit-content;
-    margin: auto auto;
     text-align: center;
-
     h1 {
       font-size: 48px;
     }
+  }
+
+  .centerpls {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   h1 {
@@ -51,7 +56,7 @@ description: probably something you didn't mean to enter, because that doesn't e
   random404();
 </script>
 
-<div class="asdasd">
+<div class="asdasd centerpls">
   <h1>404 - <span class="ca-text-wavy" style="font-weight: 600;">Not here!</span></h1>
   <img src="/assets/images/death.png" onclick="random404()">
   <p id="random404lol" class="four04"></p>

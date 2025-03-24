@@ -6,20 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
     <link rel="icon" type="image/png" href="/assets/images/cate.png">
-
 
     <meta content="cookiaria website" property="og:title">
 
     {% if page.description %}
-        <meta content="{{ page.description }}" property="og:title">
+        <meta content="{{ page.description }}" property="og:description">
     {% endif %}
 
     <meta content="https://cookiaria.lol" property="og:url">
     <meta content="/assets/banner.png" property="og:image">
     <meta name="twitter:card" content="summary_large_image">
 
-    <title>{{ page.title }}</title>
+    <title>cookiaria{% if page.title %} - {{ page.title }}{% else %} website{% endif %}</title>
 </head>
 
 <body>
@@ -35,11 +35,19 @@
         </main>
     </div>
 
-    <div class="ca-background-image">
+
+    <div class="ca-background-container">
+        <div class="ca-background-image"></div>
+        <div class="ca-background-overlay"></div>
     </div>
+    
 
     <script src="/assets/js/wavytext.js"></script>
     <script src="/assets/js/scale.js"></script>
 </body>
+
+<script>
+    adjustMainScale();
+</script>
 
 </html>

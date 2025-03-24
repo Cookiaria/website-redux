@@ -1,5 +1,8 @@
-document.addEventListener('DOMContentLoaded', function () {
+// Function to initialize the gallery
+function initializeGallery() {
     const gallery = document.querySelector('.gallery');
+    if (!gallery) return;
+
     fetch('/assets/gallery.json')
         .then(response => response.json())
         .then(imageData => {
@@ -15,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 galleryItem.appendChild(img);
                 gallery.appendChild(galleryItem);
             });
-
             // Wait for all images to load before initializing Masonry
             const images = gallery.querySelectorAll('img');
             const imageLoadPromises = Array.from(images).map(img => {
@@ -104,16 +106,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Set the new image source and wait for it to load
                 overlayImg.onload = () => {
-                    // Hide the throbber and remove dimming once the image is loaded
                     throbber.style.display = 'none';
                     overlayImg.classList.remove('dimmed');
                 };
                 overlayImg.onerror = () => {
-                    console.error('Error loading image:', currentItem.source);
-                    throbber.style.display = 'none'; // Hide throbber on error
-                    overlayImg.classList.remove('dimmed'); // Remove dimming on error
+                    alert('something went wrong, try refreshing?')
+                    throbber.style.display = 'none';
+                    overlayImg.classList.remove('dimmed');
                 };
-                overlayImg.src = currentItem.source; // Trigger image load
+                overlayImg.src = currentItem.source;
 
                 currentIndex = index;
             }
@@ -139,13 +140,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Previous button functionality
             prevBtn.addEventListener('click', () => {
-                let newIndex = currentIndex > 0 ? currentIndex - 1 : imageData.length - 1; // Wrap around
+                let newIndex = currentIndex > 0 ? currentIndex - 1 : imageData.length - 1;
                 updateOverlay(newIndex);
             });
 
             // Next button functionality
             nextBtn.addEventListener('click', () => {
-                let newIndex = currentIndex < imageData.length - 1 ? currentIndex + 1 : 0; // Wrap around
+                let newIndex = currentIndex < imageData.length - 1 ? currentIndex + 1 : 0;
                 updateOverlay(newIndex);
             });
 
@@ -153,15 +154,12 @@ document.addEventListener('DOMContentLoaded', function () {
             document.addEventListener('keydown', (e) => {
                 if (overlay.style.display === 'flex') {
                     if (e.key === 'ArrowLeft') {
-                        // Navigate to the previous image
-                        let newIndex = currentIndex > 0 ? currentIndex - 1 : imageData.length - 1; // Wrap around
+                        let newIndex = currentIndex > 0 ? currentIndex - 1 : imageData.length - 1;
                         updateOverlay(newIndex);
                     } else if (e.key === 'ArrowRight') {
-                        // Navigate to the next image
-                        let newIndex = currentIndex < imageData.length - 1 ? currentIndex + 1 : 0; // Wrap around
+                        let newIndex = currentIndex < imageData.length - 1 ? currentIndex + 1 : 0;
                         updateOverlay(newIndex);
                     } else if (e.key === 'Escape') {
-                        // Close the overlay
                         overlay.style.display = 'none';
                     }
                 }
@@ -170,4 +168,18 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => {
             console.error('Error loading JSON file:', error);
         });
+}
+
+function cleanupGallery() {
+    const overlay = document.querySelector('.overlay');
+    if (overlay) {
+        overlay.remove(); 
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initializeGallery();
 });
+
+window.initializeGallery = initializeGallery;
+cleanupGallery

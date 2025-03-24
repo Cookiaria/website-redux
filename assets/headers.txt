@@ -83,9 +83,9 @@ kitty cat meow mrow
 WHAT
 HOW
 twitter will explode in 4
-> looks inside
-<img src="/assets/images/emotes/niko_crumbs.png" class="ca-cookimoji"> 
-<img src="/assets/images/emotes/niko_pancakes.png" class="ca-cookimoji"> 
+> looks inside <br> > wires
+<img src="/assets/images/emotes/niko_crumbs.png" class="ca-cookimoji"> gnomf
+<img src="/assets/images/emotes/niko_pancakes.png" class="ca-cookimoji"> WHAT
 <img src="/assets/images/emotes/niko_speak.png" class="ca-cookimoji"> 
 "optical media BAD!"
 im hungry...
@@ -100,3 +100,11 @@ top 3 fnaf
 <span class="ca-jp">私はバグかもしれません...</span>
 Jewel Crust
 that bird that i hate
+i miss windows 7
+now with Sass!
+AT THE SPEED OF LIGHT
+A place kind of like a home...
+Battle against a fucked up opponent
+trans rights
+ralsei my beloved
+Five. Nights.
