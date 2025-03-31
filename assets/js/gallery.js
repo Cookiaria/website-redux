@@ -55,12 +55,12 @@ function initializeGallery() {
 
             const prevBtn = document.createElement('button');
             prevBtn.className = 'nav-btn prev-btn';
-            prevBtn.innerHTML = '<i class="nf nf-oct-arrow_left"></i>';
+            prevBtn.innerHTML = '<i class="nerd-font nf-oct-arrow_left"></i>';
             overlay.appendChild(prevBtn);
 
             const nextBtn = document.createElement('button');
             nextBtn.className = 'nav-btn next-btn';
-            nextBtn.innerHTML = '<i class="nf nf-oct-arrow_right"></i>';
+            nextBtn.innerHTML = '<i class="nerd-font nf-oct-arrow_right"></i>';
             overlay.appendChild(nextBtn);
 
             const overlayContent = document.createElement('div');

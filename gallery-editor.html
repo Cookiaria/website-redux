@@ -1,0 +1,145 @@
+---
+layout: default
+title: gallery JSON editor
+description: gallery editor
+---
+
+<style>
+    .editor-container {
+        margin: 20px auto;
+        max-width: 800px;
+    }
+
+    .editor-item {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .editor-item img {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .editor-item input {
+        width: 100%;
+        margin-top: 10px;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+
+    .editor-actions {
+        margin-top: 20px;
+    }
+
+    .editor-actions button {
+        padding: 8px 16px;
+        margin: 5px;
+        border: none;
+        border-radius: 8px;
+        background-color: var(--accent-color);
+        color: white;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 16px;
+    }
+
+    .editor-actions button:hover {
+        opacity: 0.8;
+    }
+</style>
+
+<h2>because editing the gallery json file manually is awful</h2>
+<p>put stuff in "/assets/images/gallery/source" and run gallery-json-generator, it'll generate thumbnails and the json on the same directory as the script</p>
+<p>this part of the website is to edit the description and add credit for the art in <a href="/gallery">/gallery</a>! :3</p>
+<p>this is mostly made for myself. sorry for anyone that might want to actually use this LOL</p>
+
+<div class="editor-actions">
+    <button id="importButton">import</button>
+    <button id="exportButton">export</button>
+</div>
+
+<div class="editor-container" id="editorContainer"></div>
+
+
+<script>
+    let imageData = [];
+
+    function renderEditor() {
+        const editorContainer = document.getElementById('editorContainer');
+        editorContainer.innerHTML = '';
+        imageData.forEach((item, index) => {
+            const editorItem = document.createElement('div');
+            editorItem.className = 'editor-item';
+
+            const img = document.createElement('img');
+            img.src = item.thumbnail || item.source;
+            img.alt = item.title;
+
+            const titleInput = document.createElement('input');
+            titleInput.type = 'text';
+            titleInput.value = item.title || '';
+            titleInput.placeholder = 'Enter title';
+            titleInput.addEventListener('input', (e) => {
+                imageData[index].title = e.target.value;
+            });
+
+            const artistInput = document.createElement('input');
+            artistInput.type = 'text';
+            artistInput.value = item.artist || '';
+            artistInput.placeholder = 'Enter artist';
+            artistInput.addEventListener('input', (e) => {
+                imageData[index].artist = e.target.value;
+            });
+
+            editorItem.appendChild(img);
+            editorItem.appendChild(titleInput);
+            editorItem.appendChild(artistInput);
+            editorContainer.appendChild(editorItem);
+        });
+    }
+
+    document.getElementById('importButton').addEventListener('click', () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.json'; 
+        fileInput.style.display = 'none';
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        imageData = JSON.parse(e.target.result);
+                        renderEditor();
+                    } catch (error) {
+                        alert('Invalid JSON format.');
+                    }
+                };
+                reader.onerror = () => {
+                    alert('Error reading the file.');
+                };
+                reader.readAsText(file); 
+            }
+        });
+
+        document.body.appendChild(fileInput); 
+        fileInput.click(); 
+    });
+
+
+    document.getElementById('exportButton').addEventListener('click', () => {
+        const jsonString = JSON.stringify(imageData, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'gallery.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    renderEditor();
+</script>

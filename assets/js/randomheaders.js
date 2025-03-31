@@ -20,7 +20,6 @@ async function fetchHeaderLines() {
 function getRandomHeaderLine(lines) {
     if (lines.length === 0) return null;
 
-    // Shuffle the array once and iterate sequentially
     if (!Array.isArray(getRandomHeaderLine.queue)) {
         getRandomHeaderLine.queue = [...lines].sort(() => Math.random() - 0.5);
     }
@@ -64,8 +63,6 @@ async function randomHeader(prefix = '') {
     updateElementContent(element, randomLine);
 }
 
-// Attach to the global object for console access
 window.randomHeader = randomHeader;
 
-// Call by default with an empty prefix
 randomHeader();

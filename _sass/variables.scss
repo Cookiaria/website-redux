@@ -7,23 +7,24 @@ $headerColor: #202025;
 $bodyColor: #16161a;
 $backgroundColor: #0F0F12;
 
-/* you can delete these if you don't want blur effects */
-/* $headerBlur: 15px;
-/* $bodyBlur: 10px;
-*/
+$generalRoundness: 6px;
+$imageRoundness: 16px;
 
-$rainbowColors: linear-gradient(90deg,
-    #FF6F6F 0%,
-    #FFB74E 10%,
-    #FFF55E 20%,
-    #B0FF6C 30%,
-    #63FF79 40%,
-    #71E5FF 50%,
-    #8A9FFF 60%,
-    #A589F6 70%,
-    #F47CFF 80%,
-    #FF6CC7 90%,
-    #FF6F6F 100%)
-
-/* keep in mind that it must end with the same color as the first*/
-/* be gay, do crime :3 */
+$rainbowColors: linear-gradient(
+        90deg,
+            #fe7e6f 0%,
+            #fec46f 7.14%,
+            #fffa6f 14.29%,
+            #ddff6f 21.43%,
+            #91ff6f 28.57%,
+            #6eff73 35.71%,
+            #6fffef 42.86%,
+            #6fffef 50%,
+            #6ea9fe 57.14%,
+            #6ea9fe 64.29%,
+            #6ea9fe 71.43%,
+            #dc6eff 78.57%,
+            #ff6efa 85.71%,
+            #fe6fc3 92.86%,
+            #fe7e6f 100%
+    ) // last color must be the same one as the first

@@ -140,6 +140,5 @@
 }
 
 .overlay img.dimmed {
-    filter: brightness(50%); /* Reduce brightness to 50% */
-    transition: filter 0.3s ease; /* Smooth transition effect */
+    filter: brightness(50%); 
 }

@@ -1,0 +1,115 @@
+.highlight table td { padding: 5px; }
+.highlight table pre { margin: 0; }
+.highlight, .highlight .w {
+  color: inherit;
+}
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kt, .highlight .kv {
+  color: #ffdb96;
+}
+.highlight .gr {
+  color: #f6f8fa;
+}
+.highlight .gd {
+  color: #e04360;
+  background-color: #ffebe9;
+}
+.highlight .nb {
+  color: #ff5a5a;
+}
+.highlight .nc {
+  color: #ff5a5a;
+}
+.highlight .no {
+  color: #ff5a5a;
+}
+.highlight .nn {
+  color: #ff5a5a;
+}
+.highlight .sr {
+  color: #83fd7f;
+}
+.highlight .na {
+  color: #fda87f;
+}
+.highlight .nt {
+  color: #83fd7f;
+}
+.highlight .gi {
+  color: #83fd7f;
+  background-color: #dafbe1;
+}
+.highlight .ges {
+  font-weight: bold;
+  font-style: italic;
+}
+.highlight .kc {
+  color: #a6c6ff;
+}
+.highlight .l, .highlight .ld, .highlight .m, .highlight .mb, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo, .highlight .mx {
+  color: #a6c6ff;
+}
+.highlight .sb {
+  color: #a6c6ff;
+}
+.highlight .bp {
+  color: #a6c6ff;
+}
+.highlight .ne {
+  color: #a6c6ff;
+}
+.highlight .nl {
+  color: #ffd8a6;
+}
+.highlight .py {
+  color: #a6c6ff;
+}
+.highlight .nv, .highlight .vc, .highlight .vg, .highlight .vi, .highlight .vm {
+  color: #a6c6ff;
+}
+.highlight .o, .highlight .ow {
+  color: #a6c6ff;
+}
+.highlight .gh {
+  color: #a6c6ff;
+  font-weight: bold;
+}
+.highlight .gu {
+  color: #a6c6ff;
+  font-weight: bold;
+}
+.highlight .s, .highlight .sa, .highlight .sc, .highlight .dl, .highlight .sd, .highlight .s2, .highlight .se, .highlight .sh, .highlight .sx, .highlight .s1, .highlight .ss {
+  color: #85b6ff;
+}
+.highlight .nd {
+  color: #ff88e7;
+}
+.highlight .nf, .highlight .fm {
+  color: #4ae6ff;
+}
+.highlight .err {
+  color: #f6f8fa;
+  background-color: #ff2b528f;
+}
+.highlight .c, .highlight .ch, .highlight .cd, .highlight .cm, .highlight .cp, .highlight .cpf, .highlight .c1, .highlight .cs {
+  color: #6e7781;
+}
+.highlight .gl {
+  color: #6e7781;
+}
+.highlight .gt {
+  color: #6e7781;
+}
+.highlight .ni {
+  color: #fde4dc;
+}
+.highlight .si {
+  color: #fde4dc;
+}
+.highlight .ge {
+  color: #fde4dc;
+  font-style: italic;
+}
+.highlight .gs {
+  color: #fde4dc;
+  font-weight: bold;
+}
