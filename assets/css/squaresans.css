@@ -1,0 +1,83 @@
+@font-face {
+    font-family: "PF Square Sans Pro";
+    src: url(/assets/fonts/square_sans/PFSquareSansProBold.ttf) format("truetype");
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "PF Square Sans Pro";
+    src: url(/assets/fonts/square_sans/PFSquareSansProBoldItalic.ttf) format("truetype");
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "PF Square Sans Pro";
+    src: url(/assets/fonts/square_sans/PFSquareSansProExtraBlack.ttf) format("truetype");
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "PF Square Sans Pro";
+    src: url(/assets/fonts/square_sans/PFSquareSansProExtraBlackItalic.ttf) format("truetype");
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "PF Square Sans Pro";
+    src: url(/assets/fonts/square_sans/PFSquareSansProItalic.ttf) format("truetype");
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "PF Square Sans Pro";
+    src: url(/assets/fonts/square_sans/PFSquareSansProLight.ttf) format("truetype");
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "PF Square Sans Pro";
+    src: url(/assets/fonts/square_sans/PFSquareSansProLightItalic.ttf) format("truetype");
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "PF Square Sans Pro";
+    src: url(/assets/fonts/square_sans/PFSquareSansProMedium.ttf) format("truetype");
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "PF Square Sans Pro";
+    src: url(/assets/fonts/square_sans/PFSquareSansProMediumItalic.ttf) format("truetype");
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "PF Square Sans Pro";
+    src: url(/assets/fonts/square_sans/PFSquareSansProRegular.ttf) format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "PF Square Sans Pro";
+    src: url(/assets/fonts/square_sans/PFSquareSansProThin.ttf) format("truetype");
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "PF Square Sans Pro";
+    src: url(/assets/fonts/square_sans/PFSquareSansProThinItalic.ttf) format("truetype");
+    font-weight: 100;
+    font-style: italic;
+}

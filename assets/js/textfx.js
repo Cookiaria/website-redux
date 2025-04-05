@@ -1,9 +1,21 @@
-// -------------------------------------------------------------
-// Wavy Rainbow Text
-// -------------------------------------------------------------
+function checkAndInitialize() {
+    const wavyElements = document.querySelectorAll('.ca-wavy:not(.ca-initialized)');
+    const rainbowElements = document.querySelectorAll('.ca-rainbow:not(.ca-initialized)');
+    const wavyRainbowElements = document.querySelectorAll('.ca-wavy-rainbow:not(.ca-initialized)');
 
-function initializeWavyRainbowText() {
-    document.querySelectorAll('.ca-wavy-rainbow').forEach(parentEl => {
+    if (wavyElements.length > 0) {
+        initializeWavyText(wavyElements);
+    }
+    if (rainbowElements.length > 0) {
+        initializeRainbowText(rainbowElements);
+    }
+    if (wavyRainbowElements.length > 0) {
+        initializeWavyRainbowText(wavyRainbowElements);
+    }
+}
+
+function initializeWavyRainbowText(elements) {
+    elements.forEach(parentEl => {
         const text = parentEl.textContent.trim();
         parentEl.innerHTML = '';
 
@@ -18,7 +30,6 @@ function initializeWavyRainbowText() {
             const span = document.createElement('span');
             span.textContent = char === ' ' ? '\u00A0' : char;
             parentEl.appendChild(span);
-
             phases.push((index * Math.PI) / 8); 
         });
 
@@ -44,7 +55,6 @@ function initializeWavyRainbowText() {
         function interpolateColor(color1, color2, factor) {
             if (factor <= 0) return color1;
             if (factor >= 1) return color2;
-            
             const result = color1.slice();
             for (let i = 0; i < 3; i++) {
                 result[i] = Math.round(result[i] + factor * (color2[i] - result[i]));
@@ -56,14 +66,13 @@ function initializeWavyRainbowText() {
 
         function animate(timestamp) {
             if (!startTime) startTime = timestamp;
-
             const elapsedTime = timestamp - startTime;
             const angle = (elapsedTime / 1000) * frequency * Math.PI * 2;
 
             Array.from(parentEl.children).forEach((span, index) => {
                 const phase = phases[index];
                 const rawWave = Math.sin(angle + phase);
-                const easedWave = easingFormula((rawWave + 1) / 2) * 2 - 1; 
+                const easedWave = easingFormula((rawWave + 1) / 2) * 2 - 1;
                 const translateY = amplitude * easedWave;
                 span.style.transform = `translateY(${translateY}em)`;
 
@@ -77,7 +86,6 @@ function initializeWavyRainbowText() {
                 const rgb1 = hexToRgb(colors[colorIndex1]);
                 const rgb2 = hexToRgb(colors[colorIndex2]);
                 const interpolatedRgb = interpolateColor(rgb1, rgb2, factor);
-                
                 span.style.color = rgbToHex(interpolatedRgb);
             });
 
@@ -85,18 +93,12 @@ function initializeWavyRainbowText() {
         }
 
         requestAnimationFrame(animate);
+        parentEl.classList.add('ca-initialized');
     });
 }
 
-document.addEventListener('DOMContentLoaded', initializeWavyRainbowText);
-window.initializeWavyRainbowText = initializeWavyRainbowText;
-
-// ----------------------------------------------------
-// rainbow Text
-// ----------------------------------------------------
-
-function initializeRainbowText() {
-    document.querySelectorAll('.ca-rainbow').forEach(parentEl => {
+function initializeRainbowText(elements) {
+    elements.forEach(parentEl => {
         const text = parentEl.textContent.trim();
         parentEl.innerHTML = '';
 
@@ -117,7 +119,6 @@ function initializeRainbowText() {
         function interpolateColor(color1, color2, factor) {
             if (factor <= 0) return color1;
             if (factor >= 1) return color2;
-            
             const result = color1.slice();
             for (let i = 0; i < 3; i++) {
                 result[i] = Math.round(result[i] + factor * (color2[i] - result[i]));
@@ -142,8 +143,7 @@ function initializeRainbowText() {
 
             Array.from(parentEl.children).forEach((span, index) => {
                 const position = ((elapsedTime / 1000) * 0.5 + index * 0.05) % 1;
-                
-                const colorCount = colors.length - 1; // -1 because last color is literally the same thing
+                const colorCount = colors.length - 1;
                 const colorPosition = position * colorCount;
                 const colorIndex1 = Math.floor(colorPosition);
                 const colorIndex2 = colorIndex1 + 1;
@@ -152,7 +152,6 @@ function initializeRainbowText() {
                 const rgb1 = hexToRgb(colors[colorIndex1]);
                 const rgb2 = hexToRgb(colors[colorIndex2]);
                 const interpolatedRgb = interpolateColor(rgb1, rgb2, factor);
-                
                 span.style.color = rgbToHex(interpolatedRgb);
             });
 
@@ -160,18 +159,12 @@ function initializeRainbowText() {
         }
 
         requestAnimationFrame(animate);
+        parentEl.classList.add('ca-initialized');
     });
 }
 
-document.addEventListener('DOMContentLoaded', initializeRainbowText);
-window.initializeRainbowText = initializeRainbowText;
-
-// ----------------------------------------------------
-// Wavy Text
-// ----------------------------------------------------
-
-function initializeWavyText() {
-    document.querySelectorAll('.ca-wavy').forEach(parentEl => {
+function initializeWavyText(elements) {
+    elements.forEach(parentEl => {
         const text = parentEl.textContent.trim();
         parentEl.innerHTML = '';
 
@@ -196,14 +189,13 @@ function initializeWavyText() {
 
         function animate(timestamp) {
             if (!startTime) startTime = timestamp;
-
             const elapsedTime = timestamp - startTime;
             const angle = (elapsedTime / 1000) * frequency * Math.PI * 2;
 
             Array.from(parentEl.children).forEach((span, index) => {
                 const phase = phases[index];
                 const rawWave = Math.sin(angle + phase);
-                const easedWave = easingFormula((rawWave + 1) / 2) * 2 - 1; 
+                const easedWave = easingFormula((rawWave + 1) / 2) * 2 - 1;
                 const translateY = amplitude * easedWave;
                 span.style.transform = `translateY(${translateY}em)`;
             });
@@ -212,14 +204,21 @@ function initializeWavyText() {
         }
 
         requestAnimationFrame(animate);
+        parentEl.classList.add('ca-initialized');
     });
 }
 
-document.addEventListener('DOMContentLoaded', initializeWavyText);
+const observer = new MutationObserver((mutations) => {
+    checkAndInitialize();
+});
+
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});
+
+checkAndInitialize();
+
+window.initializeWavyRainbowText = initializeWavyRainbowText;
+window.initializeRainbowText = initializeRainbowText;
 window.initializeWavyText = initializeWavyText;
-
-// ----------------------------------------------------
-// shaky text
-// ----------------------------------------------------
-
-// soon...

@@ -100,7 +100,6 @@ top 3 fnaf
 Jewel Crust
 that bird that i hate
 i miss windows 7
-now with Sass!
 AT THE SPEED OF LIGHT
 A place kind of like a home...
 Battle against a fucked up opponent
@@ -108,3 +107,4 @@ trans rights
 ralsei my beloved
 Five. Nights.
 ima potato
+var(--u-stupid)

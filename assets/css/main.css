@@ -1,8 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=M+PLUS+Rounded+1c&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('/assets/css/squaresans.css');
 
 :root {
+    --header-font: "PF Square Sans Pro", sans-serif;
     --default-font: "Fredoka", serif;
+
+    --codeblock-font: "Ubuntu Mono", monospace;
+    --codeblock-font-size: 16px;
+
     --jp-font: "M PLUS Rounded 1c", sans-serif;
 
     --text-color: white;
@@ -52,6 +57,7 @@ body {
     font-family: var(--default-font);
     display: block;
     background-color: var(--background-color);
+    transition-duration: 0.25s;
     margin: 0;
     height: 100%;
 }
@@ -86,9 +92,14 @@ h3,
 h4,
 h5,
 h6 {
+    font-family: var(--header-font);
     margin-top: 6px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     font-weight: 600;
+}
+
+.ca-maincontent>h1 {
+    border-bottom: 2px rgba(255, 255, 255, 0.1) solid;
 }
 
 #ca-everything {
@@ -112,8 +123,8 @@ ol {
     padding: 0 16px;
 }
 
-li > ul,
-li > ol {
+li>ul,
+li>ol {
     padding-left: 0;
 }
 
@@ -141,7 +152,7 @@ li > ol {
     z-index: -5;
     height: 100%;
     width: 100%;
-    animation: mario 20s linear infinite;
+    animation: mario 15s linear infinite;
 }
 
 @keyframes mario {
@@ -155,7 +166,14 @@ li > ol {
 }
 
 .ca-background-overlay {
-    background: radial-gradient(circle, transparent 70%, var(--background-color));
+    --radgradient-color: var(--background-color);
+    background: 
+            radial-gradient(
+                circle, 
+                transparent 70%,
+                var(--radgradient-color) 100%
+            );
+    transition-duration: 1s;
     position: fixed;
     left: 0px;
     top: 0px;
@@ -218,6 +236,7 @@ a.ca-tablinks:nth-child(1) {
     border-bottom: 1px var(--border-color) solid;
     border-bottom-left-radius: var(--general-roundness);
     border-bottom-right-radius: var(--general-roundness);
+    transition-duration: 0.25s;
 }
 
 .ca-tablinks.active {
@@ -226,6 +245,7 @@ a.ca-tablinks:nth-child(1) {
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
     color: var(--accent-color);
+    transition-duration: 0.25s;
 }
 
 .ca-header {
@@ -305,7 +325,7 @@ a.ca-tablinks:nth-child(1) {
     border-radius: var(--image-roundness);
     background-color: rgba(255, 255, 255, 0.05);
     display: block;
-    margin: 0 auto;
+    margin: 16px auto;
     max-height: 512px;
     max-width: 75%;
     min-width: 25%;
@@ -414,6 +434,7 @@ a:hover {
 }
 
 .code-header {
+    font-family: var(--default-font);
     display: flex;
     align-items: center;
     padding: 6px 12px;
@@ -433,6 +454,11 @@ pre {
     padding: 8px 16px;
     overflow-x: auto;
     line-height: 1.5;
+}
+
+code {
+    font-family: var(--codeblock-font);
+    font-size: var(--codeblock-font-size);
 }
 
 /* ----------------------- 

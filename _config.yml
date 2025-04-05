@@ -1,5 +1,9 @@
 markdown: kramdown
 highlighter: rouge
 
-sass:
-  sass_dir: _sass
+collections:
+  posts:
+    output: true
+    permalink: /posts/:title/
+
+host: 0.0.0.0

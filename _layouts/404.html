@@ -6,18 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="/assets/css/styles.css">
-    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" href="/assets/css/nerdfonts.css">
+
     <link rel="icon" type="image/png" href="/assets/images/cate.png">
 
     <meta content="cookiaria website" property="og:title">
 
     {% if page.description %}
-        <meta content="{{ page.description }}" property="og:description">
+    <meta content="{{ page.description }}" property="og:description">
     {% endif %}
 
     <meta content="https://cookiaria.lol" property="og:url">
     <meta content="/assets/banner.png" property="og:image">
     <meta name="twitter:card" content="summary_large_image">
+
+    
 
     <title>cookiaria{% if page.title %} - {{ page.title }}{% else %} website{% endif %}</title>
 </head>
@@ -27,6 +32,7 @@
     <div id="ca-everything">
         <main>
             {% include header.html %}
+            <script src="/assets/js/randomheaders.js"></script>
 
             <div class="ca-maincontent">
                 {{ content }}
@@ -40,14 +46,20 @@
         <div class="ca-background-image"></div>
         <div class="ca-background-overlay"></div>
     </div>
-    
 
-    <script src="/assets/js/wavytext.js"></script>
+    <script src="/assets/js/textfx.js"></script>
     <script src="/assets/js/scale.js"></script>
+    <script src="/assets/js/codeblocks.js"></script>
+
+    <!-- disabled for performance reasons lol
+    <script src="/assets/js/switcher.js"></script>
+    -->
 </body>
 
 <script>
     adjustMainScale();
 </script>
+
+
 
 </html>

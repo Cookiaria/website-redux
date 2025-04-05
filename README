@@ -1,6 +1,0 @@
-real
-
-links inside website must include data-page like so 
-`<a href="/page" data-page="page">`
-
-just a reminder for myself

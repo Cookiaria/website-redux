@@ -12,12 +12,15 @@ description: gallery editor
 
     .editor-item {
         margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
         text-align: center;
     }
 
     .editor-item img {
         width: 100%;
-        max-width: 300px;
+        max-width: 350px;
         height: auto;
         border-radius: 8px;
     }
@@ -25,12 +28,15 @@ description: gallery editor
     .editor-item input {
         width: 100%;
         margin-top: 10px;
-        padding: 5px;
+        padding: 8px;
         box-sizing: border-box;
+        border: 1px solid #ddd;
+        border-radius: 4px;
     }
 
     .editor-actions {
         margin-top: 20px;
+        text-align: center;
     }
 
     .editor-actions button {
@@ -48,98 +54,374 @@ description: gallery editor
     .editor-actions button:hover {
         opacity: 0.8;
     }
+
+    .add-image-button {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .add-image-button:hover {
+        opacity: 0.8;
+    }
+
+    .remove-btn {
+        background-color: #ff4444 !important;
+        margin-top: 10px;
+    }
+
+    .filename-input {
+        font-family: monospace;
+        font-size: 14px;
+    }
+
+    .status-message {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 4px;
+        text-align: center;
+    }
+
+    .success {
+        background-color: #dff0d8;
+        color: #3c763d;
+    }
+
+    .error {
+        background-color: #f2dede;
+        color: #a94442;
+    }
 </style>
 
-<h2>because editing the gallery json file manually is awful</h2>
-<p>put stuff in "/assets/images/gallery/source" and run gallery-json-generator, it'll generate thumbnails and the json on the same directory as the script</p>
-<p>this part of the website is to edit the description and add credit for the art in <a href="/gallery">/gallery</a>! :3</p>
-<p>this is mostly made for myself. sorry for anyone that might want to actually use this LOL</p>
+<h2>gallery editor thing</h2>
+<p>made entirely with deepseek because i would've never figure out how to do this @w@</p>
 
 <div class="editor-actions">
-    <button id="importButton">import</button>
-    <button id="exportButton">export</button>
+    <button id="importZipButton">import zip</button>
+    <button id="importImagesButton">add images...</button>
+    <button id="exportZipButton">export zip</button>
 </div>
+
+<div id="statusMessage" class="status-message" style="display: none;"></div>
 
 <div class="editor-container" id="editorContainer"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
 <script>
     let imageData = [];
 
+    function showStatus(message, isSuccess) {
+        const statusEl = document.getElementById('statusMessage');
+        statusEl.textContent = message;
+        statusEl.className = `status-message ${isSuccess ? 'success' : 'error'}`;
+        statusEl.style.display = 'block';
+        setTimeout(() => statusEl.style.display = 'none', 5000);
+    }
+
     function renderEditor() {
         const editorContainer = document.getElementById('editorContainer');
         editorContainer.innerHTML = '';
+
+        if (imageData.length === 0) {
+            editorContainer.innerHTML = '<p>nothing yet. try adding some images!</p>';
+            return;
+        }
+
         imageData.forEach((item, index) => {
             const editorItem = document.createElement('div');
             editorItem.className = 'editor-item';
 
+            // Image display
             const img = document.createElement('img');
-            img.src = item.thumbnail || item.source;
-            img.alt = item.title;
+            img.src = item.thumbnailData || item.sourceData || '';
+            img.alt = item.title || 'gallery image';
+            img.style.maxWidth = '350px';
 
+            // Filename input
+            const filenameInput = document.createElement('input');
+            filenameInput.type = 'text';
+            filenameInput.value = item.filename || '';
+            filenameInput.placeholder = 'filename.png';
+            filenameInput.className = 'filename-input';
+            filenameInput.addEventListener('input', (e) => {
+                imageData[index].filename = e.target.value;
+            });
+
+            // Title input
             const titleInput = document.createElement('input');
             titleInput.type = 'text';
             titleInput.value = item.title || '';
-            titleInput.placeholder = 'Enter title';
+            titleInput.placeholder = 'title...';
             titleInput.addEventListener('input', (e) => {
                 imageData[index].title = e.target.value;
             });
 
+            // Artist input
             const artistInput = document.createElement('input');
             artistInput.type = 'text';
             artistInput.value = item.artist || '';
-            artistInput.placeholder = 'Enter artist';
+            artistInput.placeholder = 'artist...';
             artistInput.addEventListener('input', (e) => {
                 imageData[index].artist = e.target.value;
             });
 
+            // Remove button
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = 'X';
+            removeBtn.className = 'remove-btn';
+            removeBtn.addEventListener('click', () => {
+                imageData.splice(index, 1);
+                renderEditor();
+            });
+
+            // Assemble the editor item
             editorItem.appendChild(img);
+            editorItem.appendChild(filenameInput);
             editorItem.appendChild(titleInput);
             editorItem.appendChild(artistInput);
+            editorItem.appendChild(removeBtn);
             editorContainer.appendChild(editorItem);
         });
     }
 
-    document.getElementById('importButton').addEventListener('click', () => {
+    // Import ZIP file
+    document.getElementById('importZipButton').addEventListener('click', () => {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
-        fileInput.accept = '.json'; 
+        fileInput.accept = '.zip';
         fileInput.style.display = 'none';
 
-        fileInput.addEventListener('change', (event) => {
+        fileInput.addEventListener('change', async (event) => {
             const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
+            if (!file) return;
+
+            try {
+                const zip = await JSZip.loadAsync(file);
+
+                // Check for gallery.json
+                if (!zip.file('gallery.json')) {
+                    throw new Error('ZIP file is missing gallery.json');
+                }
+
+                // Parse gallery.json
+                const jsonContent = await zip.file('gallery.json').async('text');
+                const galleryData = JSON.parse(jsonContent);
+
+                // Clear existing data
+                imageData = [];
+
+                // Process each entry
+                for (const item of galleryData) {
                     try {
-                        imageData = JSON.parse(e.target.result);
-                        renderEditor();
+                        // Extract filename from source path
+                        const filename = item.source.split('/').pop();
+
+                        // Get source image
+                        const sourcePath = item.source.replace(/^gallery\//, '');
+                        const sourceFile = zip.file(sourcePath);
+                        if (!sourceFile) {
+                            console.warn(`Source image not found: ${sourcePath}`);
+                            continue;
+                        }
+                        // Get thumbnail image
+                        const thumbPath = item.thumbnail.replace(/^gallery\//, '');
+                        const thumbFile = zip.file(thumbPath);
+                        if (!thumbFile) {
+                            console.warn(`Thumbnail image not found: ${thumbPath}`);
+                            continue;
+                        }
+
+                        // Convert to Data URLs
+                        const sourceData = await getDataURLFromZipFile(sourceFile);
+                        const thumbData = await getDataURLFromZipFile(thumbFile);
+
+                        // Add to imageData
+                        imageData.push({
+                            filename: filename,
+                            sourceData: sourceData,
+                            thumbnailData: thumbData,
+                            title: item.title || '',
+                            artist: item.artist || ''
+                        });
                     } catch (error) {
-                        alert('Invalid JSON format.');
+                        console.error('Error processing gallery item:', item, error);
                     }
-                };
-                reader.onerror = () => {
-                    alert('Error reading the file.');
-                };
-                reader.readAsText(file); 
+                }
+
+                showStatus(`Successfully imported ${imageData.length} images from ZIP`, true);
+                renderEditor();
+            } catch (error) {
+                console.error('Error importing ZIP:', error);
+                showStatus(`Error importing ZIP: ${error.message}`, false);
             }
         });
 
-        document.body.appendChild(fileInput); 
-        fileInput.click(); 
+        document.body.appendChild(fileInput);
+        fileInput.click();
+        document.body.removeChild(fileInput);
     });
 
+    // Import individual images
+    document.getElementById('importImagesButton').addEventListener('click', () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.multiple = true;
+        fileInput.style.display = 'none';
 
-    document.getElementById('exportButton').addEventListener('click', () => {
-        const jsonString = JSON.stringify(imageData, null, 2);
-        const blob = new Blob([jsonString], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'gallery.json';
-        a.click();
-        URL.revokeObjectURL(url);
+        fileInput.addEventListener('change', async (event) => {
+            const files = Array.from(event.target.files);
+            if (files.length === 0) return;
+
+            let addedCount = 0;
+
+            for (const file of files) {
+                try {
+                    const fileData = await readFileAsDataURL(file);
+                    const filename = file.name;
+
+                    // Check if filename already exists
+                    const exists = imageData.some(item => item.filename === filename);
+                    if (exists) {
+                        console.warn(`Skipping duplicate filename: ${filename}`);
+                        continue;
+                    }
+
+                    const newItem = {
+                        filename: filename,
+                        sourceData: fileData,
+                        thumbnailData: fileData, // Will be resized on export
+                        title: '',
+                        artist: ''
+                    };
+
+                    imageData.push(newItem);
+                    addedCount++;
+                } catch (error) {
+                    console.error('Error processing file:', file.name, error);
+                }
+            }
+
+            showStatus(`Added ${addedCount} new image(s)`, true);
+            renderEditor();
+        });
+
+        document.body.appendChild(fileInput);
+        fileInput.click();
+        document.body.removeChild(fileInput);
     });
 
+    // Export as ZIP
+    document.getElementById('exportZipButton').addEventListener('click', async () => {
+        if (imageData.length === 0) {
+            showStatus('No images to export!', false);
+            return;
+        }
+
+        try {
+            const zip = new JSZip();
+            const picturesFolder = zip.folder('gallery');
+            const sourceFolder = picturesFolder.folder('source');
+            const thumbsFolder = picturesFolder.folder('thumbs');
+
+            // Prepare gallery.json content
+            const galleryJson = imageData.map(item => {
+                const filename = item.filename || `image_${Date.now()}.png`;
+                return {
+                    source: `/assets/gallery/source/${filename}`,
+                    thumbnail: `/assets/gallery/thumbs/${filename}`,
+                    title: item.title || '',
+                    artist: item.artist || ''
+                };
+            });
+
+            // Add JSON file
+            zip.file('gallery.json', JSON.stringify(galleryJson, null, 2));
+
+            // Process images
+            for (const item of imageData) {
+                const filename = item.filename || `image_${Date.now()}.png`;
+
+                try {
+                    // Add source image (original)
+                    const sourceBlob = dataURLToBlob(item.sourceData);
+                    sourceFolder.file(filename, sourceBlob);
+
+                    // Add thumbnail (resized)
+                    const thumbBlob = await createThumbnail(item.sourceData, 350);
+                    thumbsFolder.file(filename, thumbBlob);
+                } catch (error) {
+                    console.error('Error processing image:', filename, error);
+                }
+            }
+
+            // Generate and download ZIP
+            const content = await zip.generateAsync({ type: 'blob' });
+            saveAs(content, 'gallery.zip');
+            showStatus('ZIP export completed successfully!', true);
+        } catch (error) {
+            console.error('Error exporting ZIP:', error);
+            showStatus(`Error exporting ZIP: ${error.message}`, false);
+        }
+    });
+
+    // Helper functions
+    async function getDataURLFromZipFile(zipFile) {
+        const blob = await zipFile.async('blob');
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    function readFileAsDataURL(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function dataURLToBlob(dataURL) {
+        const arr = dataURL.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], { type: mime });
+    }
+
+    function createThumbnail(dataURL, maxWidth) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = function () {
+                const canvas = document.createElement('canvas');
+                const scale = maxWidth / img.width;
+                canvas.width = maxWidth;
+                canvas.height = img.height * scale;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                canvas.toBlob(resolve, 'image/jpeg', 0.8);
+            };
+            img.src = dataURL;
+        });
+    }
+
+    // Initial render
     renderEditor();
 </script>

@@ -1,0 +1,110 @@
+---
+title: posts
+layout: default
+description: 
+data: posts
+---
+
+<style>
+  .ca-post {
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background-color: #16161a;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .ca-post>img {
+    margin-right: 16px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 18px;
+    flex-shrink: 0;
+  }
+
+  .ca-post:hover {
+    background-color: rgba(255, 255, 255, 0.025);
+  }
+
+  .ca-post>div {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ca-post>div>p {
+    font-size: 18px;
+    margin: 0;
+    padding-top: 4px;
+  }
+
+  .ca-post>div>h2 {
+    margin: 0;
+  }
+
+  .ca-post>div>h2>span {
+    font-size: 22px;
+    vertical-align: middle;
+  }
+
+  .ca-post-date {
+    font-size: 14px !important;
+    opacity: 0.5;
+  }
+</style>
+
+<!-- search bar style -->
+<style>
+  /* Search container styling - customize as needed */
+  .ca-search-container {
+    margin-bottom: 20px;
+  }
+
+  .ca-search-input {
+    width: 100%;
+    padding: 4px 15px;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.025);
+    color: var(--text-color);
+  }
+
+  .ca-search-input:focus {
+    border-color: var(--accent-color);
+    outline: none;
+  }
+
+  .ca-posts-container.searching {
+    opacity: 0.8;
+  }
+</style>
+
+<h1 style="text-align: center;">~ awesome posts ~</h1>
+
+<div class="ca-search-container">
+  <input type="text" id="ca-search-input" placeholder="search stuff..." class="ca-search-input">
+  <p style="font-size: 0.75em; opacity: 0.5;text-align: center;">(posts are sorted by date, in dd-mm-yyyy format, but you can't search by date for now lmao)</p>
+</div>
+
+<div class="ca-posts-container">
+  {% for post in site.posts %}
+  <div class="ca-post">
+    <img {% if post.image %}src="{{ post.image }}" {% endif %}>
+    <div>
+      <h2>
+        <a href="{{ post.url }}">{{ post.ptitle }}</a>
+      </h2>
+      <p>
+        {{ post.description }}
+      </p>
+      <p class="ca-post-date">
+        <br> posted @ {{ post.date | date: "%d-%m-%Y" }}
+      </p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
