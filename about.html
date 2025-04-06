@@ -6,29 +6,77 @@ description: a lil' bit about me, cookiaria!
 
 <style>
     :root {
-        --text-color: #fff0de;
-        --accent-color: #ff8600;
-        --header-color: #252220;
-        --body-color: #1a1816;
-        --background-color: #1b1915;
+        --text-color: #FEE8CC;
+        --accent-color: #FE8C45;
+        --header-color: #2C1E14;
+        --body-color: #231C17;
+        --background-color: #191106;
     }
 
-    .aboutme-container > h2, p {
+    .aboutme-container>h2,
+    .aboutme-container>p,
+    .aboutme-container>sub {
         text-align: center;
         font-family: var(--default-font) !important;
         text-transform: lowercase;
     }
 
-    .aboutme-container > img {
+    .aboutme-container>p {
+        margin-bottom: 16px;
+    }
+
+    .buh {
+        opacity: 0.5;
+        text-align: center;
+        margin: 8px 0;
+        line-height: 0.5;
+        font-size: 0.8em;
+    }
+
+    .aboutme-container>img {
         display: block;
         margin: 0 auto;
         border-radius: 16px;
         margin-bottom: 16px;
+    }
+
+    .about-tabs {
+        display: flex;
+        max-width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 0.9em;
+    }
+
+    .atablinks {
+        font-size: 1.1em;
+        padding: 4px 16px;
+        margin: 0 6px;
+        background-color: var(--header-color);
+        border: var(--border-color) 1px solid;
+        border-radius: 8px;
+        color: var(--text-color);
+        transition-duration: 0.1s;
+    }
+
+    .atablinks:hover {
+        text-decoration: none;
+        color: var(--accent-color);
     }
 </style>
 
 <div class="aboutme-container">
     <img src="/assets/images/hi.png" width="256px">
     <h2>heya, my name's <span class="ca-wavy ca-rainbow">cookiaria!</span></h2>
-    <p>i love computer... mmm computer...</p>
+    <p class="buh">she/her • <img src="/assets/hellyea.png" class="ca-cookimoji"> • EN/ES</p>
+    <p>i'm a tech enthusiast, rhythm game loving freak, somewhat of an artist, weird music loving, tiny furry creature
+        thing that spends most of the time creating things on the internet.</p>
 </div>
+
+<div class="about-tabs">
+    <a class="atablinks" href="/projects" data-page="projects">projects</a>
+    <a class="atablinks" href="/projects" data-page="projects">refsheet</a>
+    <a class="atablinks" href="/projects" data-page="projects">IDK</a>
+</div>
+
+<hr>

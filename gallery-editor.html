@@ -325,31 +325,31 @@ description: gallery editor
             showStatus('No images to export!', false);
             return;
         }
-
         try {
             const zip = new JSZip();
-            const picturesFolder = zip.folder('gallery');
-            const sourceFolder = picturesFolder.folder('source');
-            const thumbsFolder = picturesFolder.folder('thumbs');
+
+            // Create the assets/gallery/source and assets/gallery/thumbs folders
+            const galleryFolder = zip.folder('assets').folder('gallery');
+            const sourceFolder = galleryFolder.folder('source');
+            const thumbsFolder = galleryFolder.folder('thumbs');
 
             // Prepare gallery.json content
             const galleryJson = imageData.map(item => {
                 const filename = item.filename || `image_${Date.now()}.png`;
                 return {
-                    source: `/assets/gallery/source/${filename}`,
-                    thumbnail: `/assets/gallery/thumbs/${filename}`,
+                    source: `/assets/gallery/source/${filename}`, 
+                    thumbnail: `/assets/gallery/thumbs/${filename}`, 
                     title: item.title || '',
                     artist: item.artist || ''
                 };
             });
 
-            // Add JSON file
-            zip.file('gallery.json', JSON.stringify(galleryJson, null, 2));
+            // Add JSON file to the assets folder
+            galleryFolder.file('gallery.json', JSON.stringify(galleryJson, null, 2));
 
             // Process images
             for (const item of imageData) {
                 const filename = item.filename || `image_${Date.now()}.png`;
-
                 try {
                     // Add source image (original)
                     const sourceBlob = dataURLToBlob(item.sourceData);

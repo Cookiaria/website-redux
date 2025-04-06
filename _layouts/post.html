@@ -22,14 +22,42 @@
     <meta content="/assets/banner.png" property="og:image">
     <meta name="twitter:card" content="summary_large_image">
 
-    <title>cookiaria website | {{ page.title | downcase }}</title>
+    <title>cookiaria{% if page.ptitle %} - {{ page.ptitle }}{% else %} website{% endif %}</title>
 </head>
 
 <body>
 
     <div id="ca-everything">
         <main>
-            {% include header.html %}
+            <style>
+                .ca-logo-text > h2 {
+                    font-family: var(--default-font);
+                    border: none;
+                }
+            </style>
+            
+            <div class="ca-header-container">
+                <div class="ca-header-tabs">
+                    <a href="/" class="ca-tablinks" data-page="home"><i class="nerd-font nf-fa-home"></i> home</a>
+                    <a href="/posts" class="ca-tablinks" data-page="posts"><i class="nerd-font nf-fa-newspaper"></i> posts</a>
+                    <a href="/about" class="ca-tablinks" data-page="about"><i class="nerd-font nf-oct-person_fill"></i> about</a>
+                    <a href="/gallery" class="ca-tablinks" data-page="gallery"><i class="nerd-font nf-fa-photo"></i> gallery</a>
+                </div>
+            
+                <header class="ca-header">
+                    <div class="ca-header-logo">
+                        <img src="/assets/images/cate.png" onclick="randomHeader()" align="left" draggable="false">
+                    </div>
+            
+                    <div class="ca-logo-text">
+                        <h2>cookiaria - post</h2>
+                        <div class="ca-header-text">
+                            <p id="headerrandom"></p>
+                        </div>
+                    </div>
+                </header>
+            </div>
+
             <script src="/assets/js/randomheaders.js"></script>
 
             <div class="ca-maincontent">
@@ -52,9 +80,7 @@
     <script src="/assets/js/scale.js"></script>
     <script src="/assets/js/codeblocks.js"></script>
 
-    <!-- disabled for performance reasons lol
-    <script src="/assets/js/switcher.js"></script>
-    -->
+    <script src="/assets/js/funy/barrel.js"></script>
 </body>
 
 <script>

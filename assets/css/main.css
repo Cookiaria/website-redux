@@ -16,9 +16,11 @@
     --body-color: #16161a;
     --background-color: #0F0F12;
 
+    --shadow: rgba(0, 0, 0, 0.5) 0px 0px 28px;
+
     --border-color: rgba(255, 255, 255, 0.25);
 
-    --general-roundness: 6px;
+    --general-roundness: 8px;
     --image-roundness: 16px;
 
     --rainbow-colors: linear-gradient(90deg,
@@ -115,7 +117,7 @@ main {
 }
 
 hr {
-    margin: 32px 0;
+    margin: 16px 0;
 }
 
 ul,
@@ -236,14 +238,14 @@ a.ca-tablinks:nth-child(1) {
     border-bottom: 1px var(--border-color) solid;
     border-bottom-left-radius: var(--general-roundness);
     border-bottom-right-radius: var(--general-roundness);
-    transition-duration: 0.25s;
+    transition-duration: 0.1s;
 }
 
 .ca-tablinks.active {
     bottom: 6px;
     border-bottom: 1px var(--border-color) solid;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: var(--general-roundness);
+    border-bottom-right-radius: var(--general-roundness);
     color: var(--accent-color);
     transition-duration: 0.25s;
 }
@@ -256,7 +258,7 @@ a.ca-tablinks:nth-child(1) {
     display: flex;
     align-items: center;
     box-sizing: border-box;
-
+    box-shadow: var(--shadow);;
     h2 {
         font-weight: 600;
     }
@@ -297,6 +299,7 @@ a.ca-tablinks:nth-child(1) {
     border-radius: var(--general-roundness);
     background-color: var(--body-color);
     box-sizing: border-box;
+    box-shadow: var(--shadow);
 }
 
 .ca-header-text {
