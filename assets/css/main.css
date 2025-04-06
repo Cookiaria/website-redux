@@ -326,7 +326,6 @@ a.ca-tablinks:nth-child(1) {
 .ca-maincontent>img,
 .ca-maincontent>p>img {
     border-radius: var(--image-roundness);
-    background-color: rgba(255, 255, 255, 0.05);
     display: block;
     margin: 16px auto;
     max-height: 512px;
