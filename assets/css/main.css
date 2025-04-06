@@ -316,11 +316,11 @@ a.ca-tablinks:nth-child(1) {
 }
 
 .ca-cookimoji {
-    height: 1.4em;
-    padding-left: 3px;
-    padding-right: 3px;
-    margin-top: -4px;
-    margin-bottom: -4px;
+	height: 1.7em;
+	padding-left: 3px;
+	padding-right: 3px;
+	margin-top: -6px;
+	margin-bottom: -9px;
 }
 
 .ca-maincontent>img,
