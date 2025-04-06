@@ -7,7 +7,7 @@ description: testing page
 # The glungus galunga bobo.
 The bongungus wagongus bubo chonko. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam laoreet tortor libero, nec laoreet sem condimentum nec. Mauris at luctus tellus. Nam eu malesuada nulla, sed condimentum augue. Aenean ut tristique lacus, in dapibus mauris. Donec posuere nisi non ipsum commodo auctor. Mauris vel viverra nulla. In mattis vulputate scelerisque. Sed malesuada quam in ligula porttitor commodo. Sed varius ut lorem eget efficitur. Etiam viverra accumsan convallis. 
 
-![](/assets/images/gallery/source/cooki2.png)
+![](/assets/gallery/source/cooki2.png)
 
 Vestibulum nisl magna, laoreet sit amet lacinia sed, commodo nec augue. Sed faucibus purus nec facilisis vehicula. Donec ut nibh molestie, egestas ante id, dignissim ipsum. Maecenas tellus est, gravida a sem vitae, venenatis vulputate felis. Vivamus malesuada pellentesque placerat. Curabitur maximus venenatis est sit amet tincidunt. Vestibulum pellentesque dignissim enim, ac varius massa ornare sed. 
 
@@ -24,7 +24,7 @@ Vestibulum nisl magna, laoreet sit amet lacinia sed, commodo nec augue. Sed fauc
 }
 ```
 
-![](/assets/images/gallery/source/anatomy.jpg)
+![](/assets/gallery/source/anatomy.jpg)
 
  Ut ultrices in libero et consequat. Sed aliquam purus nec nulla faucibus, fermentum pharetra tellus tempor. Etiam ultricies lorem sem, interdum dignissim nulla iaculis vitae. Suspendisse nunc orci, ullamcorper ac mi non, placerat faucibus velit. In hac habitasse platea dictumst. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ac nulla metus. Aenean quis elit quis tellus rutrum finibus. Proin vel gravida nibh. 
 
@@ -34,14 +34,14 @@ text fx
 
 <h2 class="ca-wavy">groovy...</h2>
 <h2 class="ca-rainbow">fruity</h2>
-<h2 class="ca-wavy-rainbow">this might be awesome?</h2>
+<h2 class="ca-wavy ca-rainbow">this might be awesome?</h2>
 <h2 class="ca-rainbow-legacy">legacy fruity</h2>
 
 ---
 
 <p class="ca-wavy">smol wave</p>
 <p class="ca-rainbow">smol fruity</p>
-<p class="ca-wavy-rainbow">smol wavy fruity</p>
+<p class="ca-wavy ca-rainbow">smol wavy fruity</p>
 <p class="ca-rainbow-legacy">legacy smol fruity</p>
 
 ---
@@ -83,7 +83,7 @@ text fx
 
 image
 
-![aaa](/assets/images/gallery/source/cooki2.png )
+![aaa](/assets/gallery/source/cooki2.png )
 
 ---
 
