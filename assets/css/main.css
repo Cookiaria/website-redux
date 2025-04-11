@@ -272,10 +272,15 @@ a.ca-tablinks:nth-child(1) {
     vertical-align: middle;
     padding: 8px;
     user-select: none;
-
+    transition-duration: 0.25s;
     img {
         height: 96px;
     }
+}
+
+.ca-header-logo:hover {
+    transform: scale(1.05);
+    cursor: pointer;
 }
 
 .ca-logo-text {
