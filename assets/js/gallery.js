@@ -143,7 +143,7 @@ function initializeGallery() {
                             overlayImg.classList.remove('dimmed');
                         };
                         overlayImg.onerror = () => {
-                            alert('Something went wrong, try refreshing?');
+                            alert(`hi a_cat send this to cooki: ${overlayImg.src} - ${overlayImg.onerror.event}`);
                             throbber.style.display = 'none';
                             overlayImg.classList.remove('dimmed');
                         };
