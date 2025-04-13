@@ -1,4 +1,3 @@
-// Function to initialize the gallery
 function initializeGallery() {
     const gallery = document.querySelector('#gallery');
     if (!gallery) return; // Exit if gallery doesn't exist
@@ -21,9 +20,11 @@ function initializeGallery() {
                 galleryItem.className = 'gallery-item';
                 const img = document.createElement('img');
                 img.src = item.thumbnail;
-                img.dataset.source = item.source;
+                img.dataset.source = item.image;
                 img.dataset.title = item.title;
-                img.dataset.artist = item.artist;
+                img.dataset.description = item.description;
+                img.dataset.artistName = item.artist.name;
+                img.dataset.artistUrl = item.artist.url;
                 galleryItem.appendChild(img);
                 gallery.appendChild(galleryItem);
             });
@@ -91,6 +92,10 @@ function initializeGallery() {
                 overlayTitle.className = 'overlay-title';
                 overlayContent.appendChild(overlayTitle);
 
+                const overlayDescription = document.createElement('div');
+                overlayDescription.className = 'overlay-description';
+                overlayContent.appendChild(overlayDescription);
+
                 const overlayArtist = document.createElement('div');
                 overlayArtist.className = 'overlay-artist';
                 overlayContent.appendChild(overlayArtist);
@@ -105,18 +110,25 @@ function initializeGallery() {
                     throbber.style.display = 'block';
                     overlayImg.classList.add('dimmed');
                     overlayTitle.innerHTML = currentItem.title;
-                    overlayArtist.innerHTML = `art by <span class="artist-name">${currentItem.artist}</span>!`;
+                    overlayDescription.innerHTML = currentItem.description;
+
+                    // Generate artist link
+                    const artistLink = document.createElement('a');
+                    artistLink.href = currentItem.artist.url;
+                    artistLink.target = '_blank'; // Open in new tab
+                    artistLink.textContent = currentItem.artist.name;
+                    overlayArtist.innerHTML = `art by <span class="artist-name">${artistLink.outerHTML}</span>!`;
 
                     overlayImg.onload = () => {
                         throbber.style.display = 'none';
                         overlayImg.classList.remove('dimmed');
                     };
                     overlayImg.onerror = () => {
-                        alert('something went wrong, try refreshing?');
+                        alert('Something went wrong, try refreshing?');
                         throbber.style.display = 'none';
                         overlayImg.classList.remove('dimmed');
                     };
-                    overlayImg.src = currentItem.source;
+                    overlayImg.src = currentItem.image;
                     currentIndex = index;
                 }
 

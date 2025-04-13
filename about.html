@@ -4,6 +4,8 @@ title: about
 description: a lil' bit about me, cookiaria!
 ---
 
+<!-- this page fucking SUCKS ! and its very unoptimized -->
+
 <style>
     .ca-maincontent {
         padding-bottom: 0 !important;
@@ -44,7 +46,7 @@ description: a lil' bit about me, cookiaria!
     .aboutme-container>img {
         display: block;
         margin: 0 auto;
-        border-radius: 16px;
+        border-radius: 48px;
         margin-bottom: 16px;
     }
 
@@ -190,16 +192,17 @@ description: a lil' bit about me, cookiaria!
 <hr> <!-- ======================================================== -->
 
 <h1>
-    i like weird music...
+    IM A MUSIC FREAK.
 </h1>
 <p>
-    so here's my top 4 favorite songs!
+    and here's my top <span style="font-weight: bold;">3</span> favorite songs!
 </p> <br>
 
 <style>
     .song {
         position: relative;
-        height: 148px;
+        min-height: 100px;
+        max-height: 160px;
         color: white;
         text-shadow: 0 0 8px black;
         box-shadow: 8px 8px 32px rgba(0, 0, 0, 0.5);
@@ -227,13 +230,6 @@ description: a lil' bit about me, cookiaria!
         background-size: 811px;
     }
 
-    .pioneer {
-        background-image: url(/assets/images/postbgs/iil.jpg);
-        background-repeat: no-repeat;
-        background-position-y: 25%;
-        background-position-x: 30%;
-    }
-
     .badnumber>div>h1 {
         color: rgb(255, 208, 164);
     }
@@ -241,6 +237,7 @@ description: a lil' bit about me, cookiaria!
     .emme>div>h1 {
         color: #FD8521;
     }
+
     .emme>div>p>a {
         color: #FD8521
     }
@@ -248,22 +245,16 @@ description: a lil' bit about me, cookiaria!
     .singularity>div>h1 {
         color: #f092bf;
     }
+
     .singularity>div>p>a {
         color: #f092bf
-    }
-
-    .pioneer>div>h1 {
-        color: #79b4f8;
-    }
-    .pioneer>div>p>a {
-        color: #79b4f8
     }
 
     .song>div>h1 {
         margin-top: -10px;
         margin-bottom: 2px;
         font-size: 55px;
-        transform: rotate(-2deg);
+        transform: rotate(-1deg);
     }
 
     .song>div>p {
@@ -287,84 +278,67 @@ description: a lil' bit about me, cookiaria!
 </style>
 
 <div class="ca-posts-container">
-    <div class="ca-post song badnumber">
-        <div>
-            <h1>
-                BAD NUMBER!
-            </h1>
-            <p>by <a>Tanger</a></p>
-            <p>in album: Prefer not to say</p>
-        </div>
-        <div class="songlinks sc">
-            <a href="/link/to/soundcloud" style="color: rgb(255, 185, 128);">soundcloud ></a>
-        </div>
-        <div class="songlinks sp">
-            <a href="/link/to/spotify" style="color: rgb(255, 208, 164);">spotify ></a>
-        </div>
-    </div>
-
     <div class="ca-post song emme">
         <div>
             <h1>
                 emme
             </h1>
-            <p>by: <a>phonon</a></p>
+            <p>by: <a target="_blank" href="https://soundcloud.com/phonon_music">phonon</a></p>
         </div>
         <div class="songlinks sc">
-            <a href="/link/to/soundcloud" style="color: #FD8521;">soundcloud ></a>
+            <a target="_blank" href="https://soundcloud.com/phonon_music/emme" style="color: #FD8521;">soundcloud ></a>
         </div>
         <div class="songlinks sp">
-            <a href="/link/to/spotify" style="color: #FD8521;">spotify ></a>
+            <a target="_blank" href="https://open.spotify.com/track/3p15F46vmAIGEdwHEApt4i?si=2fdd787fc3f44d1b" style="color: #FD8521;">spotify ></a>
+        </div>
+    </div>
+
+    <div class="ca-post song badnumber">
+        <div>
+            <h1>
+                BAD NUMBER!
+            </h1>
+            <p>by <a target="_blank" href="https://tangermusic.bandcamp.com/">Tanger</a></p>
+        </div>
+        <div class="songlinks sc">
+            <a target="_blank" href="https://soundcloud.com/tangermusic/bad-number-with-disphing" style="color: rgb(255, 185, 128);">soundcloud ></a>
+        </div>
+        <div class="songlinks sp">
+            <a target="_blank" href="https://open.spotify.com/track/2HHV6zcP5wbGQglo2tNYiP?si=323a52187c784564" style="color: rgb(255, 208, 164);">spotify ></a>
         </div>
     </div>
 
     <div class="ca-post song singularity">
         <div>
-            <h1 style="font-size: 50px; transform: rotate(-1deg); margin-top: 0;">
+            <h1>
                 Singularity at 2.64e+6 BPM
             </h1>
             <p>by: <a>Kobaryo</a></p>
-            <p>in album: SUPER KEY GENERATOR</p>
         </div>
         <div class="songlinks sc">
-            <a href="/link/to/soundcloud" style="color: #f092bf;">soundcloud ></a>
+            <a target="_blank" href="https://hitnex.bandcamp.com/track/singularity-at-264e-6-bpm" style="color: #f092bf;">bandcamp ></a>
         </div>
         <div class="songlinks sp">
-            <a href="/link/to/spotify" style="color: #f092bf;">spotify ></a>
-        </div>
-    </div>
-
-    <div class="ca-post song pioneer">
-        <div>
-            <h1>
-                PIONEER-0
-            </h1>
-            <p>by: <a>II-L</a>
-            <p>in album: PIONEER PROGRAM</p>
-        </div>
-        <div class="songlinks sc">
-            <a href="/link/to/soundcloud" style="color: #79b4f8;">soundcloud ></a>
-        </div>
-        <div class="songlinks sp">
-            <a href="/link/to/spotify" style="color: #79b4f8;">spotify ></a>
+            <a target="_blank" href="https://open.spotify.com/track/3QJ4K0POF4VurCY2IBXX2q?si=7fae70228d0441e9" style="color: #f092bf;">spotify ></a>
         </div>
     </div>
 </div>
 
 <br> <!-- ======================================================== -->
 
-<p style="text-align: center;">was going to be just two but i wanted to include more...</p>
 <img src="/assets/images/death.png" width="256" style="margin: 24px auto;">
-<p style="text-align: center;">weird mix</p>
+<p style="text-align: center;">weird mix...</p>
 
 <hr>
 
 <style>
+    /* this fucking sucks */
+
     .oneshot {
         background-image: url(/assets/images/postbgs/oneshot.png);
         background-repeat: no-repeat;
         background-size: cover;
-        background-position-y: 75%;
+        background-position-y: 50%;
     }
 
     .rat {
@@ -378,7 +352,7 @@ description: a lil' bit about me, cookiaria!
         background-image: url(/assets/images/postbgs/adofai.jpg);
         background-repeat: no-repeat;
         background-size: cover;
-        background-position-y: 75%;
+        background-position-y: 50%;
     }
 
     .geodash {
@@ -386,6 +360,17 @@ description: a lil' bit about me, cookiaria!
         background-repeat: no-repeat;
         background-size: cover;
         background-position-y: 75%;
+    }
+
+    .osu {
+        background-image: url(/assets/images/postbgs/osu.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position-y: 25%;
+    }
+
+    div.song:nth-child(3) > div:nth-child(1) > p:nth-child(3) {
+        margin-bottom: 32px;
     }
 </style>
 
@@ -406,7 +391,8 @@ description: a lil' bit about me, cookiaria!
             <p>
                 actually the greatest game of all time... great ost, great story ... it's a one-of-a-kind experience
                 that you will not regret playing... <br> <br>
-                niko has become my comfort character... <img src="/assets/images/emotes/niko_crumbs.png" class="ca-cookimoji">
+                niko has become my comfort character... <img src="/assets/images/emotes/niko_crumbs.png"
+                    class="ca-cookimoji">
             </p>
         </div>
     </div>
@@ -419,7 +405,8 @@ description: a lil' bit about me, cookiaria!
             <p>
                 yeah its a roblox fnf game. whatever! this game is really unique, in a way that its actually way better
                 than you'd expect! custom charts are awesome, engine is suprisingly well optimized to be on roblox, its
-                genuinely fun! <br> it has a gacha system though... <img src="/assets/images/ral.png" class="ca-cookimoji">
+                genuinely fun! <br> it has a gacha system though... <img src="/assets/images/ral.png"
+                    class="ca-cookimoji">
             </p>
         </div>
     </div>
@@ -459,7 +446,9 @@ description: a lil' bit about me, cookiaria!
                 osu!
             </h2>
             <p>
-                <span class="ca-wavy">~ yeah...</span> here's my <a href="https://osu.ppy.sh/users/12509548">profile</a>. it's a love-hate relationship with this stupid game<br>
+                <span class="ca-wavy">~ yeah...</span> here's my <a
+                    href="https://osu.ppy.sh/users/12509548">profile</a>. it's a love-hate relationship with this stupid
+                game<br>
                 <br>
                 mania (4k) 2,445pp <br>
                 standard 4,227pp
@@ -475,31 +464,28 @@ description: a lil' bit about me, cookiaria!
 </h2>
 <!-- ======================================================== -->
 <li>
-    <a href="https://bsky.app/profile/maximaxi.cookiaria.lol" title="bsky.app">icymaxi</a> for the <a href="/404">404
+    <a target="_blank" href="https://bsky.app/profile/maximaxi.cookiaria.lol" title="bsky.app">icymaxi</a> for the <a href="/404">404
         page not found</a> page art, and art in <a href="/gallery">/gallery</a>
 </li>
 <li>
-    <a href="https://alsoangle.bsky.social">alsoangle</a> for the lil idiot at the bottom of this page, and art in <a
+    <a target="_blank" href="https://alsoangle.bsky.social">alsoangle</a> for the lil idiot at the bottom of this page, and art in <a
         href="/gallery">/gallery</a>
 </li>
 <li>
-    <a href="https://masonry.desandro.com/">Masonry</a> for <a href="/gallery">/gallery</a> tiling
+    <a target="_blank" href="https://masonry.desandro.com/">Masonry</a> for <a href="/gallery">/gallery</a> tiling
 </li>
 <li>
-    <a href="https://github.com/nexpid/WigglyText/blob/main/index.tsx">nexpid/WigglyText</a> for wavy text
+    <a target="_blank" href="https://github.com/nexpid/WigglyText/blob/main/index.tsx">nexpid/WigglyText</a> for wavy text
 </li>
 <li>
     Jekyll & Liquid
 </li>
 <li>
-    deepseek (for some javascript, <a href="/assets/js/post-search.js">post-search.js</a>, and <a href="/assets/js/scale.js">scale.js</a>)
+    deepseek (for some javascript, <a href="/assets/js/post-search.js">post-search.js</a>, and <a target="_blank" href="/assets/js/scale.js">scale.js</a>). <span style="opacity: 0.5; font-size: 0.75em;">(sorry)</span>
 </li>
 <li>
     qwen
 </li>
-
-
-
 
 <style>
     .bottom {
