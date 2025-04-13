@@ -23,6 +23,8 @@
     --general-roundness: 8px;
     --image-roundness: 16px;
 
+    --entire-width: 820px;
+
     --rainbow-colors: linear-gradient(90deg,
             #fe7e6f 0%,
             #fec46f 7.14%,
@@ -106,14 +108,18 @@ h6 {
 
 #ca-everything {
     display: flex;
-    width: 100%;
+    max-width: var(--entire-width);
     justify-content: center;
+    margin: 0 auto;
+    transition-duration: 0.25s;
+
 }
 
 main {
     width: 100%;
-    max-width: 820px;
+    max-width: var(--entire-width);
     min-width: 420px;
+    transition-duration: 0.25s;
 }
 
 hr {
