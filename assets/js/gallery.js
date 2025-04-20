@@ -117,8 +117,6 @@ function initializeGallery() {
                         const formattedDescription = currentItem.description
                             ? currentItem.description.replace(/\n/g, '<br>')
                             : '';
-                        
-                        // Conditionally render description
                         if (formattedDescription) {
                             overlayDescription.innerHTML = formattedDescription;
                             overlayDescription.style.display = 'block'; // Ensure it's visible
@@ -142,11 +140,15 @@ function initializeGallery() {
                             throbber.style.display = 'none';
                             overlayImg.classList.remove('dimmed');
                         };
-                        overlayImg.onerror = () => {
-                            alert(`hi a_cat send this to cooki: ${overlayImg.src} - ${overlayImg.onerror.event}`);
+
+                        // Updated error handling
+                        overlayImg.onerror = (error) => {
+                            const errorMessage = error ? `screenshot this and send me the screenshot please! here's the error:\n${error.message}` : 'if you\'re seeing this specific bit of text it means that something really fucked up';
+                            alert(`Something went wrong: \n \n ${errorMessage}`);
                             throbber.style.display = 'none';
                             overlayImg.classList.remove('dimmed');
                         };
+
                         overlayImg.src = currentItem.image;
                         currentIndex = index;
                     }
@@ -217,7 +219,7 @@ function setupGalleryObserver() {
 
     const observer = new MutationObserver((mutations) => {
         const gallery = document.querySelector('#gallery');
-        
+
         if (gallery && !galleryInitialized) {
             initializeGallery();
             galleryInitialized = true;
