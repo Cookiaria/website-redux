@@ -16,7 +16,7 @@
     --body-color: #16161a;
     --background-color: #0F0F12;
 
-    --background-tile: url(/assets/images/tiles/cattile.png);
+    --background-tile: url(/assets/images/tiles/cattile_dark.png);
     --background-tile-opacity: 0.02;
     --background-tile-size: 250px;
     --background-animation-time: 20s;
@@ -48,6 +48,19 @@
             #fe6fc3 92.86%,
             #fe7e6f 100%)
         /* last color must be the same one as the first! */
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --text-color: #16161a;
+        --accent-color: rgb(247, 100, 60);
+        --header-color: rgb(218, 218, 236);
+        --body-color: rgb(237, 238, 247);
+        --background-color: rgb(204, 204, 204);
+
+        --background-tile: url(/assets/images/tiles/cattile_light.png);
+        --background-tile-opacity: 0.05;
+    }
 }
 
 ::-webkit-scrollbar {
@@ -360,6 +373,7 @@ a.ca-bottom-tablinks:nth-child(1) {
 
 
 .ca-maincontent {
+    position: relative;
     margin-left: auto;
     margin-right: auto;
     font-size: 20px;
@@ -419,10 +433,11 @@ a.ca-bottom-tablinks:nth-child(1) {
     display: inline-block;
     width: 0;
     height: 25px;
-    border-left: 1px solid var(--border-color);
-    border-right: 1px solid var(--border-color);
+    border-left: 1px solid var(--text-color);
+    border-right: 1px solid var(--text-color);
     border-radius: 2px;
     margin: 0 10px;
+    opacity: 0.25;
 }
 
 .ca-footer-links {

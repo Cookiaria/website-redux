@@ -109,4 +109,3 @@ ima potato
 var(--u-stupid)
 I just wanna do something insane!!
 And if it lands on a BAD NUMBER, then oh well!
-<img src="/assets/determination.webp" class="ca-cookimoji"> <span style="color:Gold;font-weight:bold;">&nbsp;&nbsp;Determination.</span>
