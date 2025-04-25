@@ -181,12 +181,10 @@ li>ol {
 
 .ca-background-overlay {
     --radgradient-color: var(--background-color);
-    background: 
-            radial-gradient(
-                circle, 
-                transparent 70%,
-                var(--radgradient-color) 100%
-            );
+    background:
+        radial-gradient(circle,
+            transparent 70%,
+            var(--radgradient-color) 100%);
     transition-duration: 1s;
     position: fixed;
     left: 0px;
@@ -222,7 +220,8 @@ li>ol {
     margin: 0 auto;
 }
 
-.ca-tablinks, .ca-bottom-tablinks {
+.ca-tablinks,
+.ca-bottom-tablinks {
     flex-shrink: 0;
 }
 
@@ -323,7 +322,9 @@ a.ca-bottom-tablinks:nth-child(1) {
     display: flex;
     align-items: center;
     box-sizing: border-box;
-    box-shadow: var(--shadow);;
+    box-shadow: var(--shadow);
+    ;
+
     h2 {
         font-weight: 600;
     }
@@ -338,6 +339,7 @@ a.ca-bottom-tablinks:nth-child(1) {
     padding: 8px;
     user-select: none;
     transition-duration: 0.25s;
+
     img {
         height: 96px;
     }
@@ -361,7 +363,7 @@ a.ca-bottom-tablinks:nth-child(1) {
     margin-left: auto;
     margin-right: auto;
     font-size: 20px;
-    min-height: calc(100vh - 230px);
+    min-height: calc(100vh - 260px);
     margin-top: 16px;
     padding: 16px;
     color: var(--text-color);
@@ -386,11 +388,11 @@ a.ca-bottom-tablinks:nth-child(1) {
 }
 
 .ca-cookimoji {
-	height: 1.7em;
-	padding-left: 3px;
-	padding-right: 3px;
-	margin-top: -6px;
-	margin-bottom: -9px;
+    height: 1.7em;
+    padding-left: 3px;
+    padding-right: 3px;
+    margin-top: -6px;
+    margin-bottom: -9px;
 }
 
 .ca-maincontent>img,
@@ -398,9 +400,7 @@ a.ca-bottom-tablinks:nth-child(1) {
     border-radius: var(--image-roundness);
     display: block;
     margin: 16px auto;
-    max-height: 512px;
-    max-width: 75%;
-    min-width: 25%;
+    width: calc(100% - 64px);
 }
 
 .ca-maincontent>.ca-image-left {
@@ -497,7 +497,7 @@ a:hover {
     position: relative;
     border-radius: 8px;
     overflow: hidden;
-    background-color: rgba(255, 255, 255, 0.01);
+    background-color: rgba(0, 0, 0, 0.25);
     border: 1px var(--border-color) solid;
     margin: 20px 0;
 }
@@ -507,8 +507,8 @@ a:hover {
     display: flex;
     align-items: center;
     padding: 6px 12px;
-    background-color: #f4f4f40d;
-    color: #fff;
+    background-color: var(--header-color);
+    color: var(--text-color);
     font-size: 16px;
     border-bottom: 1px solid var(--border-color);
 }
@@ -528,6 +528,46 @@ pre {
 code {
     font-family: var(--codeblock-font);
     font-size: var(--codeblock-font-size);
+}
+
+code:not(pre > code) {
+    background-color: rgba(0, 0, 0, 0.25);
+    color: var(--accent-color);
+    padding: 0.2em 0.4em;
+    border-radius: var(--general-roundness);
+    border: 1px rgba(255, 255, 255, 0.25) solid;
+    font-size: 0.9em;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+table {
+    width: fit-content;
+    margin: 0 auto;
+}
+
+thead th:first-child {
+    border-top-left-radius: var(--general-roundness);
+}
+
+thead th:last-child {
+    border-top-right-radius: var(--general-roundness);
+}
+
+tbody tr:last-child td:first-child {
+    border-bottom-left-radius: var(--general-roundness);
+}
+
+tbody tr:last-child td:last-child {
+    border-bottom-right-radius: var(--general-roundness);
+}
+
+
+th,
+td {
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    text-align: left;
 }
 
 /* ----------------------- 

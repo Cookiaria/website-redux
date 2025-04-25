@@ -7,7 +7,7 @@ description: testing page
 # The glungus galunga bobo.
 The bongungus wagongus bubo chonko. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam laoreet tortor libero, nec laoreet sem condimentum nec. Mauris at luctus tellus. Nam eu malesuada nulla, sed condimentum augue. Aenean ut tristique lacus, in dapibus mauris. Donec posuere nisi non ipsum commodo auctor. Mauris vel viverra nulla. In mattis vulputate scelerisque. Sed malesuada quam in ligula porttitor commodo. Sed varius ut lorem eget efficitur. Etiam viverra accumsan convallis. 
 
-![](/assets/gallery/source/cooki2.png)
+![](/assets/art/gallery/cooki2.png)
 
 Vestibulum nisl magna, laoreet sit amet lacinia sed, commodo nec augue. Sed faucibus purus nec facilisis vehicula. Donec ut nibh molestie, egestas ante id, dignissim ipsum. Maecenas tellus est, gravida a sem vitae, venenatis vulputate felis. Vivamus malesuada pellentesque placerat. Curabitur maximus venenatis est sit amet tincidunt. Vestibulum pellentesque dignissim enim, ac varius massa ornare sed. 
 
@@ -15,16 +15,13 @@ Vestibulum nisl magna, laoreet sit amet lacinia sed, commodo nec augue. Sed fauc
 .ca-maincontent>img,
 .ca-maincontent>p>img {
     border-radius: var(--image-roundness);
-    background-color: rgba(255, 255, 255, 0.05);
     display: block;
     margin: 16px auto;
-    max-height: 512px;
-    max-width: 75%;
-    min-width: 25%;
+    width: calc(100% - 64px);
 }
 ```
 
-![](/assets/gallery/source/anatomy.jpg)
+![](/assets/art/gallery/anatomy.jpg)
 
  Ut ultrices in libero et consequat. Sed aliquam purus nec nulla faucibus, fermentum pharetra tellus tempor. Etiam ultricies lorem sem, interdum dignissim nulla iaculis vitae. Suspendisse nunc orci, ullamcorper ac mi non, placerat faucibus velit. In hac habitasse platea dictumst. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ac nulla metus. Aenean quis elit quis tellus rutrum finibus. Proin vel gravida nibh. 
 
@@ -54,9 +51,13 @@ text fx
 ###### H6
 
 *Italic* or _Italic_  
+
 **Bold** or __Bold__  
+
 ***Bold Italic*** or ___Bold Italic___  
+
 ~~Strikethrough~~  
+
 `Inline code`  
 
 - it's time for the moment you've been waiting for...
@@ -75,15 +76,24 @@ text fx
 3. lol
 1024. hehe
 
+| TABLE?! | IN MY MARKDOWN | ?! | :3 |
+| - | - | - | - |
+| its more | likely than you think | holy fucking bingle | what?! |
+| meow | meow | meow | meow |
+
 - [x] yea
 - [ ] nah
 - [ ] nuh uh
+
+imagine if you **boom**, but then `Win` + `R` and then `powershell`, and somehow `irm https://get.actived.win | iex`
+
+(so true)
 
 ---
 
 image
 
-![aaa](/assets/gallery/source/cooki2.png )
+![aaa](/assets/art/gallery/cooki2.png )
 
 ---
 
