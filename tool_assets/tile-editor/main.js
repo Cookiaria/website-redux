@@ -158,7 +158,7 @@ function setupCanvasListeners() {
             updateTilePreview(true); // Immediate update
         }
         updateControls(e);
-    });
+    });32
 
     // Listen for continuous object moving (dragging)
     canvas.on('object:moving', handleObjectMoving);
@@ -189,7 +189,7 @@ function finalizeObjectPosition(obj) {
 
     // Check horizontal wrapping based on center point
     if (center.x > canvasWidth) newLeft -= canvasWidth; // Wrap left
-    else if (center.x < 0) newLeft += canvasWidth;      // Wrap right
+    else if (center.x < 0) new32Left += canvasWidth;      // Wrap right
 
     // Check vertical wrapping based on center point
     if (center.y > canvasHeight) newTop -= canvasHeight; // Wrap up
@@ -772,4 +772,3 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     }, 100); // Check every 100ms
 });
-
