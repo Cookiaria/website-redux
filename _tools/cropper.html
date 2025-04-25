@@ -1,0 +1,110 @@
+---
+ttitle: PFP cropper
+layout: default
+description: tool that lets you crop a profile picture with a real-time preview and accurate sizes for the chosen platform
+image: /assets/images/garb.png
+---
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.css">
+
+<style>
+    :root {
+        --entire-width: 1024px;
+    }
+
+    .container-of-cropper {
+        height: 50vh;
+        display: flex;
+        max-width: fit-content;
+        margin: 0 auto;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .preview-container>[class*="previews-"] {
+        display: flex;
+        gap: 64px;
+        width: fit-content;
+        margin: 0 auto;
+    }
+
+    .general-preview-cont {
+        position: fixed;
+        padding: 8px;
+        top: 0;
+        right: 0;
+    }
+
+    #saveButton {
+        max-width: fit-content;
+        margin: 12px auto;
+        height: 32px;
+    }
+
+    .input-container {
+        max-width: fit-content;
+        margin: 8px auto;
+    }
+
+    .general-preview {
+        width: 192px;
+        height: 192px;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    #brainrotSelector {
+        max-width: fit-content;
+        margin: 0 auto;
+    }
+
+    #platformName {
+        display: none;
+    }
+
+    .ultimate-previewer {
+        display: flex;
+        gap: 8px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #previews {
+        display: flex;
+        gap: 32px;
+        max-width: fit-content;
+        margin: 0 auto;
+    }
+
+    #cropperimage {
+        display: none;
+    }
+</style>
+
+<div class="container-of-cropper">
+    <img id="cropperimage" src="/tool_assets/cropper/main.jpg">
+</div>
+
+<div class="input-container">
+    <input type="file" id="inputImage" accept="image/*">
+</div>
+
+<div class="preview-container">
+
+    <div id="brainrotSelector">
+        <label for="platform-select">choose the brainrot:</label>
+        <select id="platform-select">
+            <!-- shit will generate here -->
+        </select>
+    </div>
+
+    <div class="cropper-previewers">
+        <p id="platformName"></p>
+        <div id="previews"></div>
+    </div>
+
+</div>
+<button id="saveButton" style="display: none;">save n' show off</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.js"></script>
+<script src="/tool_assets/cropper/js/cropper-init.js"></script>

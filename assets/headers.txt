@@ -110,4 +110,3 @@ var(--u-stupid)
 I just wanna do something insane!!
 And if it lands on a BAD NUMBER, then oh well!
 <img src="/assets/determination.webp" class="ca-cookimoji"> <span style="color:Gold;font-weight:bold;">&nbsp;&nbsp;Determination.</span>
-<div style="height: 32px; overflow-y: scroll;"> <p> I'm falling.<br> I can't breathe.<br> I lost. Again.<br> Why can't they see my vision?<br> When will this end..?<br> My power is slipping away..<br> I gotta keep going.<br> Next time.. Next time for sure.<br> Everything fell out of my pockets.<br> I hate this. I want to go home.<br> My voice is somewhere here I just don't know where.<br> My SOUL stopped pulsing.<br> DROWN THIS TIME<br> WATCH THE LEDGE<br> VICTORY IS IMPOSSIBLE<br> YOUR WORDS DRIVE ME MAD<br> START ANEW<br> GIVE UP<br> DON'T COME BACK<br> ALL OF YOUR TRASH FALLS WITH YOU<br> THIS IS YOUR HOME NOW<br> I CAN SEE YOUR TRIBULATION FADE<br> </p></div>

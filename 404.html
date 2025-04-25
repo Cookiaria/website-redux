@@ -5,31 +5,48 @@ description: probably something you didn't mean to enter, because that doesn't e
 ---
 
 <style>
-  .asdasd {
-    position: relative;
-    color: white;
+  .notfound {
     text-align: center;
-    h1 {
-      font-size: 48px;
+  }
+
+  .notfound>h1 {
+    font-size: 3em;
+  }
+
+  .notfound>img:nth-child(3) {
+    width: 100%;
+    max-width: 512px;
+    height: auto;
+  }
+
+  .ca-maincontent {
+    min-height: unset !important;
+    position: fixed;
+    inset: 0px;
+    width: fit-content;
+    height: fit-content;
+    max-width: 100vw;
+    max-height: 100dvh;
+    margin: auto;
+  }
+
+  .creature-thing {
+    animation: creature 4s cubic-bezier(.86,0,.2,.99) infinite;
+  }
+
+
+  @keyframes creature {
+    0% {
+      transform: rotate(6deg);
     }
-  }
 
-  .centerpls {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
+    50% {
+      transform: rotate(-3deg);
+    }
 
-  h1 {
-    font-weight: 500;
-  }
-
-  .asdasd>img {
-    width: 480px;
-    margin: 0 -192px 32px -192px;
-    image-rendering: pixelated;
+    100% {
+      transform: rotate(6deg);
+    }
   }
 </style>
 
@@ -56,8 +73,11 @@ description: probably something you didn't mean to enter, because that doesn't e
   random404();
 </script>
 
-<div class="asdasd centerpls">
-  <h1>404 - <span class="ca-text-wavy" style="font-weight: 600;">Not here!</span></h1>
-  <img src="/assets/images/death.png" onclick="random404()">
+<div class="notfound">
+  <h1>404 ~ not found!</h1>
+  <br>
+  <img src="/assets/images/death.png" onclick="random404()" class="creature-thing">
+  <br>
+  <br>
   <p id="random404lol" class="four04"></p>
 </div>

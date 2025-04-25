@@ -1,0 +1,67 @@
+---
+layout: default
+title: tools
+description: random tools
+---
+
+<style>
+    .ca-post {
+        padding: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        margin-bottom: 12px;
+        border-radius: 8px;
+        background-color: #16161a;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .ca-post>img {
+        margin-right: 16px;
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 18px;
+        flex-shrink: 0;
+    }
+
+    .ca-post:hover {
+        background-color: rgba(255, 255, 255, 0.025);
+    }
+
+    .ca-post>div {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .ca-post>div>p {
+        font-size: 18px;
+        margin: 0;
+        padding-top: 4px;
+    }
+
+    .ca-post>div>h2 {
+        margin: 0;
+    }
+
+    .ca-post>div>h2>span {
+        font-size: 22px;
+        vertical-align: middle;
+    }
+</style>
+
+
+<div class="ca-posts-container">
+    {% for post in site.tools %}
+    <div class="ca-post">
+        <img {% if post.image %}src="{{ post.image }}" {% endif %}>
+        <div>
+            <h2>
+                <a href="{{ post.url }}">{{ post.ttitle }}</a>
+            </h2>
+            <p>
+                {{ post.description }}
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
