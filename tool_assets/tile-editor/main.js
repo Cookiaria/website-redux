@@ -1,774 +1,1003 @@
-// --- Global Variables ---
-let canvas; // Fabric.js canvas instance
-let currentSize = 256; // Initial canvas size
-const objectControls = document.getElementById('objectControls');
-const scaleRange = document.getElementById('scaleRange');
-const scaleValue = document.getElementById('scaleValue');
-const rotateRange = document.getElementById('rotateRange');
-const rotateValue = document.getElementById('rotateValue');
-const deleteBtn = document.getElementById('deleteBtn');
-const cloneBtn = document.getElementById('cloneBtn');
-const canvasSizeInput = document.getElementById('canvasSize');
-const imageLoader = document.getElementById('imageLoader');
-const textInput = document.getElementById('textInput');
-const textColorInput = document.getElementById('textColor');
-const addTextBtn = document.getElementById('addTextBtn');
-const exportBtn = document.getElementById('exportBtn');
-const selectedTextColorControl = document.getElementById('selectedTextColorControl');
-const selectedTextColorInput = document.getElementById('selectedTextColor');
-const textRotationInput = document.getElementById('textRotation');
-const textRotationValue = document.getElementById('textRotationValue');
-const tilePreview = document.getElementById('tilePreview');
-const qualityToggleBtn = document.getElementById('qualityToggleBtn'); // Keep if still needed, otherwise remove
-let isDragging = false; // Flag to track object dragging
-let highQualityPreview = false; // Keep if still needed, otherwise remove
-let previewUpdateTimeout; // Timeout ID for debouncing preview updates
+/**
+ * Seamless Tile Editor Script
+ *
+ * Handles Fabric.js canvas setup, object manipulation (add, move, scale, rotate, delete, clone),
+ * ghost clone management for seamless tiling preview, layering, and export.
+ * Incorporates fixes for ghost duplication and adds requested features.
+ */
 
-// --- NEW: Updated updateTilePreview function ---
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Global Variables & DOM Elements ---
+    let canvas; // Fabric.js canvas instance
+    let currentSize = 256; // Initial canvas size
+    let isDragging = false; // Flag to track object dragging
+    let previewUpdateTimeout; // Timeout ID for debouncing preview updates
+    let objectCounter = 0; // Simple counter for unique IDs
 
-function updateTilePreview(immediate = false) {
-    if (!canvas) return;
-    clearTimeout(previewUpdateTimeout);
+    // Panel Controls
+    const canvasSizeInput = document.getElementById('canvasSize');
+    const imageLoader = document.getElementById('imageLoader');
+    const textInput = document.getElementById('textInput');
+    const textColorInput = document.getElementById('textColor');
+    const textRotationRange = document.getElementById('textRotation');
+    const textRotationInput = document.getElementById('textRotationInput'); // New text input
+    const addTextBtn = document.getElementById('addTextBtn');
+    const exportBtn = document.getElementById('exportBtn');
 
-    const updateAction = () => {
-        // Log ghost visibility before any changes
-        console.log("Ghost visibility BEFORE update:", canvas.getObjects().filter(obj => obj._isGhostClone).map(obj => ({ id: obj.id, visible: obj.visible })));
+    // Selected Object Controls Panel
+    const objectControls = document.getElementById('objectControls');
+    const scaleRange = document.getElementById('scaleRange');
+    const scaleInput = document.getElementById('scaleInput'); // New text input
+    const rotateRange = document.getElementById('rotateRange');
+    const rotateInput = document.getElementById('rotateInput'); // New text input
+    const selectedTextColorControl = document.getElementById('selectedTextColorControl');
+    const selectedTextColorInput = document.getElementById('selectedTextColor');
+    const sendBackBtn = document.getElementById('sendBackBtn'); // New layer button
+    const bringFrontBtn = document.getElementById('bringFrontBtn'); // New layer button
+    const deleteBtn = document.getElementById('deleteBtn');
+    const cloneBtn = document.getElementById('cloneBtn');
 
-        // Temporarily make all ghosts visible
-        const ghosts = canvas.getObjects().filter(obj => obj._isGhostClone);
-        ghosts.forEach(ghost => ghost.set('visible', true));
+    // Editor Area Elements
+    const tilePreview = document.querySelector('.tile-preview');
+    const canvasWrapper = document.getElementById('canvasWrapper'); // Wrapper div for canvas
 
-        // Render the canvas to a temporary canvas
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = currentSize;
-        tempCanvas.height = currentSize;
-        const tempCtx = tempCanvas.getContext('2d');
+    // --- Initialization ---
 
-        // Render all objects except background
-        canvas.getObjects()
-            .filter(obj => !obj._isBackground)
-            .sort((a, b) => a._isGhostClone ? -1 : 1) // Ghosts first
-            .forEach(obj => {
-                obj.render(tempCtx);
-            });
+    /**
+     * Initializes the Fabric.js canvas.
+     */
+    function initCanvas() {
+        console.log("Initializing canvas...");
+        // Dispose of old canvas if resizing
+        if (canvas) {
+            canvas.dispose();
+            // Remove the old canvas element if it exists
+             const oldCanvasEl = canvasWrapper.querySelector('canvas');
+             if (oldCanvasEl) {
+                 canvasWrapper.removeChild(oldCanvasEl);
+             }
+             const oldContainer = canvasWrapper.querySelector('.canvas-container');
+              if (oldContainer) {
+                 canvasWrapper.removeChild(oldContainer);
+             }
+        }
 
-        // Update the preview
-        tilePreview.style.setProperty('--tile-preview', `url(${tempCanvas.toDataURL()})`);
-        tilePreview.style.setProperty('--tile-size', `${currentSize}px`);
+         // Create a new canvas element
+         const canvasEl = document.createElement('canvas');
+         canvasEl.id = 'c'; // Ensure it has the ID fabric looks for
+         canvasWrapper.appendChild(canvasEl);
 
-        // Restore ghost visibility states
-        ghosts.forEach(ghost => {
-            if (!ghost._shouldBeVisible) {
-                ghost.set('visible', false);
+
+        // Set initial size for wrapper and create canvas
+        canvasWrapper.style.width = `${currentSize}px`;
+        canvasWrapper.style.height = `${currentSize}px`;
+
+        canvas = new fabric.Canvas('c', {
+            width: currentSize,
+            height: currentSize,
+            backgroundColor: 'transparent', // Canvas element transparent
+            preserveObjectStacking: true, // Crucial for layering and ghosts
+            stopContextMenu: true, // Prevent browser context menu on canvas
+        });
+
+        // Add a transparent background rectangle. This helps in selecting objects
+        // near the edge but doesn't affect export unless fill is changed.
+        const bgRect = new fabric.Rect({
+            width: currentSize,
+            height: currentSize,
+            fill: 'transparent', // No visible background fill
+            selectable: false,
+            evented: false, // Not interactive
+            _isBackground: true, // Custom flag
+            id: 'backgroundRect',
+        });
+        canvas.add(bgRect);
+        canvas.sendToBack(bgRect); // Ensure it's the absolute bottom layer
+
+        // Setup listeners
+        setupCanvasListeners();
+        setupInputListeners();
+
+        // Initial state
+        updateAllClones(); // Create initial clones if any objects exist (unlikely at init)
+        updateTilePreview(true); // Immediate preview update
+        hideControls(); // Hide object controls initially
+        console.log(`Canvas initialized with size ${currentSize}x${currentSize}`);
+
+         // Force a render after a short delay to ensure layout is stable
+        setTimeout(() => {
+            canvas.renderAll();
+            updateTilePreview(true);
+        }, 50);
+    }
+
+    /**
+     * Sets up event listeners for the Fabric.js canvas.
+     */
+    function setupCanvasListeners() {
+        if (!canvas) return;
+        canvas.off(); // Clear previous listeners
+
+        // Object Selection
+        canvas.on({
+            'selection:created': updateControlsUI,
+            'selection:updated': updateControlsUI,
+            'selection:cleared': hideControls,
+        });
+
+        // Object Modification (End of Transform/Move)
+        canvas.on('object:modified', (e) => {
+            if (e.target && !e.target._isBackground) {
+                 // Finalize position *before* updating clones
+                 const wrapped = finalizeObjectPosition(e.target);
+                 // Update clones only if the object actually moved or transformed
+                 updateAllClones();
+                 updateTilePreview(true); // Immediate preview update
+                 updateControlsUI(e); // Update sliders/inputs after modification
+            }
+             isDragging = false; // Ensure dragging flag is reset
+        });
+
+        // Object Moving (During Drag)
+        canvas.on('object:moving', handleObjectMoving);
+
+        // Mouse Events for Drag State and Deselection
+        canvas.on('mouse:down', (options) => {
+            if (options.target && !options.target._isBackground && !options.target._isGhostClone) {
+                isDragging = true; // Start dragging an original object
+            } else if (!options.target) {
+                // Clicked on empty area (or background rect)
+                canvas.discardActiveObject();
+                hideControls();
+                canvas.requestRenderAll();
             }
         });
 
-        // Log ghost visibility after restoring states
-        console.log("Ghost visibility AFTER restoring states:", ghosts.map(obj => ({ id: obj.id, visible: obj.visible })));
-
-        // Force a render to ensure canvas redraws with correct ghost visibility
-        canvas.requestRenderAll();
-    };
-
-    if (immediate) {
-        updateAction();
-    } else {
-        previewUpdateTimeout = setTimeout(updateAction, 100); // Adjust timeout as needed
-    }
-}
-
-/**
- * Initializes the Fabric.js canvas.
- * Sets up dimensions, background, and attaches necessary event listeners.
- */
-// --- NEW: Updated initCanvas function ---
-function initCanvas() {
-    // Ensure Fabric.js is loaded
-    if (typeof fabric === 'undefined') {
-        console.error("Fabric.js is not loaded yet.");
-        return;
-    }
-    console.log("Fabric.js loaded, initializing canvas...");
-
-    // Dispose of the old canvas instance if it exists (e.g., on size change)
-    if (canvas) {
-        canvas.dispose();
+        canvas.on('mouse:up', handleMouseUp);
     }
 
-    // Create the new Fabric.js canvas instance
-    canvas = new fabric.Canvas('c', {
-        width: currentSize,
-        height: currentSize,
-        backgroundColor: 'rgba(255, 255, 255, 0)', // Transparent background for the canvas element itself
-        preserveObjectStacking: true // Important for keeping ghosts behind originals
-    });
+    /**
+     * Sets up event listeners for HTML input elements.
+     */
+    function setupInputListeners() {
+        // --- Panel Controls ---
+        canvasSizeInput.removeEventListener('change', handleCanvasSizeChange);
+        canvasSizeInput.addEventListener('change', handleCanvasSizeChange);
 
-    // Add white rectangle as background layer if needed (useful if exporting without transparency)
-    // Comment this out if you want a truly transparent background for export
-    const bgRect = new fabric.Rect({
-        width: currentSize,
-        height: currentSize,
-        fill: 'rgba(0, 0, 0, 0)', // Set background color here
-        selectable: false,
-        evented: false,
-        lockMovementX: true,
-        lockMovementY: true,
-        hoverCursor: 'default',
-        _isBackground: true, // Custom flag to identify background
-    });
-    canvas.add(bgRect);
-    canvas.sendToBack(bgRect); // Ensure it's behind everything
+        imageLoader.removeEventListener('change', handleImageLoad);
+        imageLoader.addEventListener('change', handleImageLoad);
 
-    // Setup event listeners for canvas and inputs
-    setupCanvasListeners();
-    setupInputListeners();
+        addTextBtn.removeEventListener('click', addText);
+        addTextBtn.addEventListener('click', addText);
 
-    // Initial render and updates
-    updateAllClones(); // Create initial clones if any objects exist (usually none at init)
-    updateTilePreview(true); // Update the preview immediately
-    console.log(`Canvas initialized with size ${currentSize}x${currentSize}`);
+        // Text Rotation (Two-way binding)
+        textRotationRange.removeEventListener('input', handleTextRotationRange);
+        textRotationRange.addEventListener('input', handleTextRotationRange);
+        textRotationInput.removeEventListener('change', handleTextRotationInput); // Use 'change' for text input to avoid firing too often
+        textRotationInput.addEventListener('change', handleTextRotationInput);
 
-    // Optional: Slight delay for final render check (sometimes helps with complex setups)
-    setTimeout(() => {
-        canvas.renderAll();
-        updateTilePreview(true);
-    }, 100);
-}
+        exportBtn.removeEventListener('click', exportPattern);
+        exportBtn.addEventListener('click', exportPattern);
+
+        // --- Selected Object Controls ---
+        // Scale (Two-way binding)
+        scaleRange.removeEventListener('input', handleScaleRange);
+        scaleRange.addEventListener('input', handleScaleRange);
+        scaleInput.removeEventListener('change', handleScaleInput);
+        scaleInput.addEventListener('change', handleScaleInput);
+
+        // Rotate (Two-way binding)
+        rotateRange.removeEventListener('input', handleRotateRange);
+        rotateRange.addEventListener('input', handleRotateRange);
+        rotateInput.removeEventListener('change', handleRotateInput);
+        rotateInput.addEventListener('change', handleRotateInput);
+
+        // Text Color
+        selectedTextColorInput.removeEventListener('input', handleSelectedTextColorChange);
+        selectedTextColorInput.addEventListener('input', handleSelectedTextColorChange);
+
+        // Layering Buttons
+        sendBackBtn.removeEventListener('click', sendLayerBackward);
+        sendBackBtn.addEventListener('click', sendLayerBackward);
+        bringFrontBtn.removeEventListener('click', bringLayerForward);
+        bringFrontBtn.addEventListener('click', bringLayerForward);
 
 
-/**
- * Sets up event listeners for the Fabric.js canvas.
- */
-function setupCanvasListeners() {
-    if (!canvas) return;
-    canvas.off(); // Clear previous listeners to prevent duplicates
+        // Action Buttons
+        deleteBtn.removeEventListener('click', deleteSelectedObject);
+        deleteBtn.addEventListener('click', deleteSelectedObject);
+        cloneBtn.removeEventListener('click', cloneSelectedObject);
+        cloneBtn.addEventListener('click', cloneSelectedObject);
 
-    // Listen for object selection events
-    canvas.on({
-        'selection:created': updateControls, // Show controls when object(s) selected
-        'selection:updated': updateControls, // Update controls if selection changes
-        'selection:cleared': hideControls,   // Hide controls when selection is cleared
-    });
 
-    // Listen for when an object is modified (scaled, rotated, finished dragging)
-    canvas.on('object:modified', (e) => {
-        if (e.target && !e.target._isBackground) {
-            finalizeObjectPosition(e.target);
-            updateAllClones();
-            updateTilePreview(true); // Immediate update
-        }
-        updateControls(e);
-    });32
-
-    // Listen for continuous object moving (dragging)
-    canvas.on('object:moving', handleObjectMoving);
-
-    // Track dragging state
-    canvas.on('mouse:down', (options) => {
-        // Ignore clicks on the background rectangle
-        if (options.target && !options.target._isBackground) isDragging = true; // Set flag when dragging starts
-    });
-    canvas.on('mouse:up', handleMouseUp); // Handle end of drag
-}
-
-/**
- * Finalizes an object's position by wrapping it around the canvas edges if its center moves off-canvas.
- * @param {fabric.Object} obj - The object to finalize.
- * @returns {boolean} - True if the object's position was changed, false otherwise.
- */
-function finalizeObjectPosition(obj) {
-    // Ignore if object is invalid, canvas isn't ready, it's a ghost clone, or the background
-    if (!obj || !canvas || obj._isGhostClone || obj._isBackground) return false;
-
-    const canvasWidth = canvas.getWidth();
-    const canvasHeight = canvas.getHeight();
-    let needsUpdate = false; // Flag to track if position changes
-    let newLeft = obj.left;
-    let newTop = obj.top;
-    const center = obj.getCenterPoint(); // Get the object's center coordinates
-
-    // Check horizontal wrapping based on center point
-    if (center.x > canvasWidth) newLeft -= canvasWidth; // Wrap left
-    else if (center.x < 0) new32Left += canvasWidth;      // Wrap right
-
-    // Check vertical wrapping based on center point
-    if (center.y > canvasHeight) newTop -= canvasHeight; // Wrap up
-    else if (center.y < 0) newTop += canvasHeight;       // Wrap down
-
-    // If position needs changing, apply it
-    if (newLeft !== obj.left || newTop !== obj.top) {
-        obj.set({ left: newLeft, top: newTop });
-        obj.setCoords(); // Update object's coordinates after moving
-        console.log("Finalized object position wrap for:", obj);
-        needsUpdate = true;
+        // Global Keydowns
+        window.removeEventListener('keydown', handleKeyDown);
+        window.addEventListener('keydown', handleKeyDown);
     }
-    return needsUpdate; // Indicate if a change occurred
-    updateTilePreview(true);
-}
 
+    // --- Input Handlers (Two-Way Binding & Actions) ---
 
-/**
- * Sets up event listeners for HTML input elements (buttons, sliders, etc.).
- */
-function setupInputListeners() {
-    // Remove potential pre-existing listeners before adding new ones
-    canvasSizeInput.removeEventListener('change', handleCanvasSizeChange);
-    imageLoader.removeEventListener('change', handleImageLoad);
-    addTextBtn.removeEventListener('click', addText);
-    scaleRange.removeEventListener('input', handleScaleChange);
-    rotateRange.removeEventListener('input', handleRotateChange);
-    selectedTextColorInput.removeEventListener('input', handleSelectedTextColorChange);
-    deleteBtn.removeEventListener('click', deleteSelectedObject);
-    cloneBtn.removeEventListener('click', cloneSelectedObject);
-    exportBtn.removeEventListener('click', exportPattern);
-    textRotationInput.removeEventListener('input', updateTextRotationDisplay);
-    window.removeEventListener('keydown', handleKeyDown); // Use window for keydown
-
-    // Add listeners
-    canvasSizeInput.addEventListener('change', handleCanvasSizeChange);
-    imageLoader.addEventListener('change', handleImageLoad);
-    addTextBtn.addEventListener('click', addText);
-    scaleRange.addEventListener('input', handleScaleChange);
-    rotateRange.addEventListener('input', handleRotateChange);
-    selectedTextColorInput.addEventListener('input', handleSelectedTextColorChange);
-    deleteBtn.addEventListener('click', deleteSelectedObject);
-    cloneBtn.addEventListener('click', cloneSelectedObject);
-    exportBtn.addEventListener('click', exportPattern);
-    textRotationInput.addEventListener('input', updateTextRotationDisplay);
-    window.addEventListener('keydown', handleKeyDown); // Listen globally for key presses
-}
-
-// Helper function for text rotation display update
-function updateTextRotationDisplay() {
-    textRotationValue.textContent = this.value + '°';
-}
-
-
-/**
- * Updates the control panel based on the currently selected object(s).
- * Shows/hides controls and sets their values.
- */
-function updateControls(e) {
-    const activeObject = canvas.getActiveObject();
-    // Hide controls if no object, a ghost, or the background is selected
-    if (!activeObject || activeObject._isGhostClone || activeObject._isBackground) {
-        hideControls();
-        return;
-    }
-    objectControls.classList.remove('hidden'); // Show the controls panel
-
-    // Default values and flags
-    let currentScale = 1;
-    let currentAngle = 0;
-    let currentFill = '#000000';
-    let isText = false;
-    let isGroup = activeObject.type === 'activeSelection'; // Check if multiple objects are selected
-
-    // If it's a single object selection
-    if (!isGroup) {
-        currentScale = activeObject.scaleX || 1; // Use scaleX (assuming uniform scaling)
-        currentAngle = activeObject.angle || 0;
-        // Check if it's a text object
-        if (activeObject.type === 'textbox' || activeObject.type === 'i-text') {
-            isText = true;
-            currentFill = activeObject.get('fill'); // Get text color
+    function handleCanvasSizeChange(e) {
+        let newSize = parseInt(e.target.value, 10);
+        newSize = Math.max(50, Math.min(1024, newSize || currentSize)); // Clamp and fallback
+        e.target.value = newSize;
+        if (newSize !== currentSize) {
+            currentSize = newSize;
+            console.log("Canvas size changed. Re-initializing...");
+            initCanvas(); // Re-initialize (clears content)
         }
     }
 
-    // Disable scale/rotate/color controls for multi-selections (groups)
-    scaleRange.disabled = isGroup;
-    rotateRange.disabled = isGroup;
-    selectedTextColorControl.classList.toggle('hidden', !isText || isGroup); // Show color only for single text objects
-
-    // Update control values if it's a single selection
-    if (!isGroup) {
-        scaleRange.value = currentScale;
-        scaleValue.textContent = parseFloat(currentScale).toFixed(2);
-        rotateRange.value = currentAngle;
-        rotateValue.textContent = `${Math.round(currentAngle)}°`;
-        if (isText) {
-            selectedTextColorInput.value = currentFill;
+    function handleImageLoad(e) {
+        const file = e.target.files[0];
+        if (file && file.type === "image/png") {
+            const reader = new FileReader();
+            reader.onload = (event) => addImage(event.target.result);
+            reader.onerror = (err) => { console.error("FileReader error:", err); alert("Error reading file."); };
+            reader.readAsDataURL(file);
+        } else if (file) {
+            alert("Please select a PNG file.");
         }
-    } else {
-        // Show placeholder text for groups
-        scaleValue.textContent = '---';
-        rotateValue.textContent = '---';
+        e.target.value = null; // Reset file input
     }
-}
 
-/**
- * Hides the selected object control panel.
- */
-function hideControls() {
-    objectControls.classList.add('hidden');
-    selectedTextColorControl.classList.add('hidden'); // Also hide text color control
-    // Optionally re-enable controls when hidden (though they are usually disabled based on selection type)
-    scaleRange.disabled = false;
-    rotateRange.disabled = false;
-}
+     // Text Rotation Handlers
+    function handleTextRotationRange() {
+        const angle = parseInt(this.value, 10);
+        textRotationInput.value = angle;
+        // Note: This only affects *new* text objects. Existing ones use the main rotation controls.
+    }
+    function handleTextRotationInput() {
+         let angle = parseInt(this.value, 10);
+         angle = Math.max(0, Math.min(360, angle || 0)); // Clamp and fallback
+         this.value = angle;
+         textRotationRange.value = angle;
+    }
 
-// --- Ghost Clone Management ---
 
-/**
- * Removes ALL ghost clones from the canvas.
- * @returns {boolean} - True if any ghosts were removed, false otherwise.
- */
-function removeAllGhostClones() {
-    if (!canvas) return false;
-    let removed = false;
-    const objects = canvas.getObjects();
-    console.log("Attempting to remove ghost clones. Total objects:", objects.length);
-
-    // Iterate backwards as we are removing items
-    for (let i = objects.length - 1; i >= 0; i--) {
-        if (objects[i]._isGhostClone) {
-            console.log(`Removing ghost clone with ID:`, objects[i].id);
-            canvas.remove(objects[i]);
-            removed = true;
+    // Scale Handlers
+    function handleScaleRange() {
+        const scale = parseFloat(this.value);
+        scaleInput.value = scale.toFixed(2);
+        applyScale(scale);
+    }
+    function handleScaleInput() {
+        let scale = parseFloat(this.value);
+        scale = Math.max(0.1, Math.min(5, scale || 1)); // Clamp and fallback
+        this.value = scale.toFixed(2);
+        scaleRange.value = scale;
+        applyScale(scale);
+    }
+    function applyScale(scale) {
+        const activeObject = canvas.getActiveObject();
+        if (isValidObject(activeObject) && activeObject.type !== 'activeSelection') {
+            activeObject.scale(scale).setCoords();
+            // Don't finalize position here, let object:modified handle it
+            updateAllClonesForObject(activeObject); // Update ghosts immediately for visual feedback
+            updateTilePreview(); // Debounced preview update
+            canvas.requestRenderAll();
         }
     }
 
-    console.log("Ghost clones removed:", removed);
-    return removed;
-}
+    // Rotate Handlers
+    function handleRotateRange() {
+        const angle = parseInt(this.value, 10);
+        rotateInput.value = angle;
+        applyRotation(angle);
+    }
+    function handleRotateInput() {
+        let angle = parseInt(this.value, 10);
+        angle = Math.max(0, Math.min(360, angle || 0)); // Clamp and fallback
+        this.value = angle;
+        rotateRange.value = angle;
+        applyRotation(angle);
+    }
+     function applyRotation(angle) {
+        const activeObject = canvas.getActiveObject();
+        if (isValidObject(activeObject) && activeObject.type !== 'activeSelection') {
+            activeObject.set('angle', angle).setCoords();
+            // Don't finalize position here, let object:modified handle it
+            updateAllClonesForObject(activeObject); // Update ghosts immediately
+            updateTilePreview(); // Debounced preview update
+            canvas.requestRenderAll();
+        }
+    }
 
-/**
- * Creates 8 ghost clones for a given object, positioned around it for seamless tiling.
- * @param {fabric.Object} obj - The original object to clone.
- */
+    // Selected Text Color Handler
+    function handleSelectedTextColorChange(e) {
+        const activeObject = canvas.getActiveObject();
+        if (isValidObject(activeObject) && (activeObject.type === 'textbox' || activeObject.type === 'i-text')) {
+            activeObject.set('fill', e.target.value);
+            // Color changes don't trigger object:modified, so update manually
+             updateAllClonesForObject(activeObject);
+            updateTilePreview();
+            canvas.requestRenderAll();
+        }
+    }
 
-function createGhostClonesForObject(obj) {
-    if (!obj || !canvas || obj._isGhostClone || obj._isBackground) return;
+     // Global Keydown Handler
+     function handleKeyDown(e) {
+        const activeElement = document.activeElement;
+        const isInputFocused = ['INPUT', 'TEXTAREA'].includes(activeElement?.tagName);
 
-    const canvasWidth = canvas.getWidth();
-    const canvasHeight = canvas.getHeight();
-    obj.setCoords();
+        // Delete object (Delete or Backspace) - only if not focused on input
+        if ((e.key === 'Delete' || e.key === 'Backspace') && canvas.getActiveObject() && !isInputFocused) {
+            e.preventDefault(); // Prevent Backspace navigation
+            deleteSelectedObject();
+        }
+         // Add other shortcuts if needed (e.g., Ctrl+C, Ctrl+V, Ctrl+Z)
+         // Be mindful of browser default actions.
+    }
 
-    const positions = [
-        { x: -canvasWidth, y: -canvasHeight }, { x: 0, y: -canvasHeight }, { x: canvasWidth, y: -canvasHeight },
-        { x: -canvasWidth, y: 0 }, { x: canvasWidth, y: 0 },
-        { x: -canvasWidth, y: canvasHeight }, { x: 0, y: canvasHeight }, { x: canvasWidth, y: canvasHeight }
-    ];
+    // --- Core Object Manipulation ---
 
-    positions.forEach(pos => {
-        obj.clone(cloned => {
-            cloned.set({
-                left: obj.left + pos.x,
-                top: obj.top + pos.y,
-                evented: false,
-                selectable: false,
-                _isGhostClone: true,
-                _originalId: obj.id,
-                visible: true,
-                _shouldBeVisible: true
+    /**
+     * Checks if an object is valid for manipulation (not null, background, or ghost).
+     * @param {fabric.Object} obj
+     * @returns {boolean}
+     */
+    function isValidObject(obj) {
+        return obj && !obj._isBackground && !obj._isGhostClone;
+    }
+
+    /**
+     * Adds an image object to the canvas.
+     * @param {string} url - The data URL of the image.
+     */
+    function addImage(url) {
+        if (!canvas) return;
+        fabric.Image.fromURL(url, (img) => {
+            const maxDim = Math.max(img.width, img.height);
+            const scaleFactor = maxDim > currentSize ? (currentSize / maxDim) * 0.8 : 0.8;
+
+            img.set({
+                left: canvas.getWidth() / 2,
+                top: canvas.getHeight() / 2,
+                originX: 'center',
+                originY: 'center',
+                scaleX: scaleFactor,
+                scaleY: scaleFactor,
+                id: `obj_${objectCounter++}`, // Assign unique ID
+                _originalId: `obj_${objectCounter -1}`, // Store original ID reference
+                transparentCorners: false,
+                cornerColor: '#3b82f6',
+                cornerSize: 10,
+                borderColor: '#3b82f6',
+                borderScaleFactor: 1.5 // Make border thicker on scaling
             });
-
-            // Add the cloned ghost to the canvas and mark it as dirty
-            canvas.add(cloned);
-            canvas.sendToBack(cloned); // Ensure ghosts are behind originals
-            cloned.set('dirty', true); // Mark as needing redraw
-        }, ['_isGhostClone', '_originalId', '_shouldBeVisible']);
-    });
-}
-
-/**
- * Forces a re-render of all objects on the canvas.
- * Useful after complex operations or when Fabric's automatic rendering might miss something.
- */
-function forceRenderAllObjects() {
-    if (!canvas) return;
-    canvas.getObjects().forEach(obj => {
-        obj.set('dirty', true); // Mark object as needing redraw
-        if (obj._isGhostClone) {
-            obj.set('visible', true); // Ensure ghosts are visible
-        }
-    });
-    canvas.renderAll(); // Trigger the render cycle
-}
-
-/**
- * Updates all ghost clones on the canvas.
- * Removes all existing ghosts and recreates them for all non-ghost, non-background objects.
- */
-function updateAllClones() {
-    if (!canvas) return;
-    console.log("Updating all clones...");
-    
-    // Remove all existing ghosts first
-    const hadGhosts = removeAllGhostClones();
-    console.log("Removed existing ghosts:", hadGhosts);
-
-    // Get all original (non-ghost, non-background) objects
-    const originalObjects = canvas.getObjects().filter(obj => !obj._isGhostClone && !obj._isBackground);
-    console.log("Original objects found:", originalObjects.length);
-
-    // Create new ghost clones for each original object
-    originalObjects.forEach(obj => {
-        createGhostClonesForObject(obj);
-        canvas.bringToFront(obj); // Ensure original objects are always on top of ghosts
-    });
-
-    // Request a re-render if clones were added/removed or if originals exist
-    if (hadGhosts || originalObjects.length > 0) {
-        canvas.getObjects().forEach(obj => obj.set('dirty', true)); // Mark all objects as dirty
-        canvas.renderAll(); // Force a full render
+            canvas.add(img);
+            canvas.setActiveObject(img);
+            finalizeObjectPosition(img); // Wrap if needed
+            updateAllClones(); // Update all ghosts
+            updateTilePreview(true);
+            updateControlsUI(); // Show controls for the new object
+            canvas.requestRenderAll();
+        }, { crossOrigin: 'anonymous' });
     }
 
-    console.log("Clone update complete.");
-}
+    /**
+     * Adds a text object to the canvas.
+     */
+    function addText() {
+        if (!canvas) return;
+        const textValue = textInput.value.trim();
+        const textColor = textColorInput.value;
+        const initialAngle = parseInt(textRotationRange.value, 10); // Use the dedicated range/input
+        if (!textValue) return;
+
+        const text = new fabric.Textbox(textValue, {
+            left: canvas.getWidth() / 2,
+            top: canvas.getHeight() / 2,
+            originX: 'center',
+            originY: 'center',
+            fill: textColor,
+            fontSize: Math.max(24, currentSize / 12), // Responsive font size
+            fontFamily: 'Inter, sans-serif',
+            angle: initialAngle,
+            id: `obj_${objectCounter++}`, // Assign unique ID
+             _originalId: `obj_${objectCounter -1}`, // Store original ID reference
+            transparentCorners: false,
+            cornerColor: '#3b82f6',
+            cornerSize: 10,
+            borderColor: '#3b82f6',
+            borderScaleFactor: 1.5,
+            width: currentSize * 0.8, // Initial max width
+            padding: 5,
+            splitByGrapheme: true // Better handling of complex characters/emoji
+        });
+
+        canvas.add(text);
+        canvas.setActiveObject(text);
+        finalizeObjectPosition(text); // Wrap if needed
+        updateAllClones(); // Update all ghosts
+        updateTilePreview(true);
+        updateControlsUI(); // Show controls
+        canvas.requestRenderAll();
+        textInput.value = ''; // Clear input
+    }
+
+    /**
+     * Deletes the currently selected object(s) and their ghosts.
+     */
+    function deleteSelectedObject() {
+        const activeObject = canvas.getActiveObject();
+        if (!isValidObject(activeObject)) return; // Check if valid before proceeding
+
+        const objectsToRemove = [];
+        if (activeObject.type === 'activeSelection') {
+            // Group selection
+            activeObject.getObjects().forEach(obj => {
+                if (isValidObject(obj)) { // Double check within group
+                    objectsToRemove.push(obj);
+                    // Also mark its ghosts for removal
+                    canvas.getObjects().forEach(ghost => {
+                        if (ghost._isGhostClone && ghost._originalId === obj.id) {
+                            objectsToRemove.push(ghost);
+                        }
+                    });
+                }
+            });
+        } else {
+            // Single selection
+            objectsToRemove.push(activeObject);
+             // Also mark its ghosts for removal
+            canvas.getObjects().forEach(ghost => {
+                if (ghost._isGhostClone && ghost._originalId === activeObject.id) {
+                    objectsToRemove.push(ghost);
+                }
+            });
+        }
+
+        // Remove all marked objects
+        objectsToRemove.forEach(obj => canvas.remove(obj));
+
+        canvas.discardActiveObject(); // Deselect
+        hideControls();
+        updateTilePreview(true); // Update preview immediately
+        canvas.requestRenderAll();
+        console.log(`Removed ${objectsToRemove.length} objects (including ghosts).`);
+    }
 
 
-// --- Object Manipulation Functions ---
+    /**
+     * Clones the currently selected object(s).
+     */
+    function cloneSelectedObject() {
+        const activeObject = canvas.getActiveObject();
+        if (!isValidObject(activeObject)) return;
 
-/**
- * Handles the continuous movement (dragging) of an object.
- * Updates the ghost clones for the *moving* object in real-time for better visual feedback.
- * Also triggers debounced preview updates.
- */
-function handleObjectMoving(options) {
-    const obj = options.target;
-    if (!obj || !canvas || !isDragging || obj._isGhostClone || obj._isBackground) return;
+        // Function to handle cloning of a single object
+        const cloneSingleObject = (objToClone) => {
+            objToClone.clone((cloned) => {
+                 // Assign new unique ID
+                const newId = `obj_${objectCounter++}`;
+                cloned.set({
+                    left: objToClone.left + 15,
+                    top: objToClone.top + 15,
+                    evented: true,
+                    selectable: true,
+                    id: newId, // New unique ID
+                    _originalId: newId, // It's its own original now
+                    _isGhostClone: false, // Ensure it's not marked as a ghost
+                    _isBackground: false, // Ensure it's not marked as background
+                });
 
-    // Get existing ghost clones for the object
-    const ghosts = canvas.getObjects().filter(o => o._isGhostClone && o._originalId === obj.id);
-    const canvasWidth = canvas.getWidth();
-    const canvasHeight = canvas.getHeight();
+                canvas.add(cloned);
+                finalizeObjectPosition(cloned); // Wrap if needed immediately
+                createGhostClonesForObject(cloned); // Create ghosts for the new clone
+                canvas.setActiveObject(cloned); // Select the new clone
+                canvas.requestRenderAll();
+                updateControlsUI();
+            }, ['id', '_originalId', '_isGhostClone', '_isBackground']); // Properties to include in clone
+        };
 
-    // Define the positions for the ghost clones
-    const positions = [
-        { x: -canvasWidth, y: -canvasHeight }, { x: 0, y: -canvasHeight }, { x: canvasWidth, y: -canvasHeight },
-        { x: -canvasWidth, y: 0 }, { x: canvasWidth, y: 0 },
-        { x: -canvasWidth, y: canvasHeight }, { x: 0, y: canvasHeight }, { x: canvasWidth, y: canvasHeight }
-    ];
+        canvas.discardActiveObject(); // Deselect original(s) first
 
-    // Update the positions of existing ghost clones
-    positions.forEach((pos, i) => {
-        if (ghosts[i]) {
-            ghosts[i].set({
+        if (activeObject.type === 'activeSelection') {
+            // Clone each object in the group individually
+            activeObject.getObjects().forEach(obj => {
+                if (isValidObject(obj)) {
+                    cloneSingleObject(obj);
+                }
+            });
+             // After cloning all, update preview (might select the last cloned item)
+             updateTilePreview(true);
+        } else {
+            // Clone the single selected object
+            cloneSingleObject(activeObject);
+            // Update preview after single clone
+            updateTilePreview(true);
+        }
+    }
+
+    // --- Ghost Clone Management ---
+
+    /**
+     * Removes all ghost clones associated with a specific original object ID.
+     * @param {string} originalId - The ID of the original object.
+     */
+    function removeGhostClonesForObject(originalId) {
+        if (!canvas || !originalId) return;
+        const ghostsToRemove = canvas.getObjects().filter(obj => obj._isGhostClone && obj._originalId === originalId);
+        ghostsToRemove.forEach(ghost => canvas.remove(ghost));
+        // console.log(`Removed ${ghostsToRemove.length} ghosts for ${originalId}`);
+    }
+
+     /**
+     * Removes ALL ghost clones from the canvas.
+     */
+    function removeAllGhostClones() {
+        if (!canvas) return;
+        const ghostsToRemove = canvas.getObjects().filter(obj => obj._isGhostClone);
+        ghostsToRemove.forEach(ghost => canvas.remove(ghost));
+        // console.log(`Removed all ${ghostsToRemove.length} ghost clones.`);
+    }
+
+    /**
+     * Creates 8 ghost clones for a given object.
+     * Ensures ghosts are sent to back initially.
+     * @param {fabric.Object} obj - The original object.
+     */
+    function createGhostClonesForObject(obj) {
+        if (!isValidObject(obj) || !canvas) return; // Ensure it's a valid original object
+
+        const canvasWidth = canvas.getWidth();
+        const canvasHeight = canvas.getHeight();
+        const originalId = obj.id; // Use the object's unique ID
+
+        if (!originalId) {
+            console.error("Cannot create ghosts for object without ID:", obj);
+            return;
+        }
+
+        // Remove existing ghosts for this object first to prevent duplicates
+        removeGhostClonesForObject(originalId);
+
+        const positions = [
+            { x: -canvasWidth, y: -canvasHeight }, { x: 0, y: -canvasHeight }, { x: canvasWidth, y: -canvasHeight },
+            { x: -canvasWidth, y: 0 },                                         { x: canvasWidth, y: 0 },
+            { x: -canvasWidth, y: canvasHeight }, { x: 0, y: canvasHeight }, { x: canvasWidth, y: canvasHeight }
+        ];
+
+        // Use a synchronous clone method if available, or handle async carefully
+        positions.forEach((pos, index) => {
+            // Clone properties including transformations
+             const cloneProps = {
                 left: obj.left + pos.x,
                 top: obj.top + pos.y,
                 angle: obj.angle,
                 scaleX: obj.scaleX,
-                scaleY: obj.scaleY
-            });
-            ghosts[i].setCoords();
-        }
-    });
+                scaleY: obj.scaleY,
+                originX: obj.originX,
+                originY: obj.originY,
+                fill: obj.fill, // Clone fill color etc.
+                stroke: obj.stroke,
+                strokeWidth: obj.strokeWidth,
+                // --- Ghost specific properties ---
+                evented: false,       // Not interactive
+                selectable: false,    // Not selectable
+                _isGhostClone: true,  // Mark as ghost
+                _originalId: originalId, // Link to original
+                id: `${originalId}_ghost_${index}` // Unique ID for the ghost itself
+            };
 
-    // Force render and debounce preview update
-    canvas.requestRenderAll();
-    updateTilePreview();
-}
+             // Create the clone based on object type
+             let ghostClone;
+             if (obj.type === 'textbox' || obj.type === 'i-text') {
+                 ghostClone = new fabric.Textbox(obj.text, { ...obj.toObject(), ...cloneProps });
+             } else if (obj.type === 'image') {
+                 // For images, creating from element is more reliable than cloning complex state
+                 ghostClone = new fabric.Image(obj.getElement(), { ...obj.toObject(), ...cloneProps });
+             } else {
+                 // Generic clone for other types (rect, circle, etc.)
+                 ghostClone = new obj.constructor({ ...obj.toObject(), ...cloneProps });
+             }
 
-/**
- * Handles the mouse up event, typically after dragging an object.
- * Finalizes the object's position and triggers a full update of clones and preview.
- */
-function handleMouseUp(options) {
-    if (!isDragging) return;
-    isDragging = false;
 
-    const target = canvas.getActiveObject();
-    if (target && !target._isBackground) {
-        finalizeObjectPosition(target);
-    }
-
-    // Ensure ghosts are updated before preview
-    updateAllClones();
-    canvas.requestRenderAll();
-
-    // Trigger preview update after ensuring clones are ready
-    setTimeout(() => {
-        updateTilePreview(true); // Immediate update
-    }, 50); // Small delay to ensure rendering completes
-}
-
-/**
- * Adds an image object to the canvas from a data URL.
- * @param {string} url - The data URL of the image.
- */
-function addImage(url) {
-    if (typeof fabric === 'undefined' || !canvas) return;
-    fabric.Image.fromURL(url, function (img) {
-        // Scale image proportionally to fit reasonably within the canvas
-        const maxDim = Math.max(img.width, img.height);
-        const scaleFactor = maxDim > currentSize ? currentSize / maxDim * 0.8 : 0.8; // Scale down if larger, default 80%
-        img.scale(scaleFactor).set({
-            left: canvas.getWidth() / 2, // Center horizontally
-            top: canvas.getHeight() / 2, // Center vertically
-            originX: 'center',
-            originY: 'center',
-            id: Date.now(),
-            // Styling for controls
-            transparentCorners: false,
-            cornerColor: '#3b82f6', // Blue
-            cornerSize: 10,
-            borderColor: '#3b82f6'
+            canvas.add(ghostClone);
+            // Send the ghost behind its original object specifically.
+            // This requires finding the original object's index.
+            const originalIndex = canvas.getObjects().indexOf(obj);
+            if (originalIndex > -1) {
+                 canvas.moveTo(ghostClone, originalIndex); // Move ghost just below original
+            } else {
+                 canvas.sendToBack(ghostClone); // Fallback: send to absolute back
+            }
         });
-        canvas.add(img); // Add to canvas
-        canvas.setActiveObject(img); // Select the new image
-        finalizeObjectPosition(img); // Ensure it's wrapped correctly initially
-        updateAllClones(); // Update ghosts for all objects
-        updateTilePreview(true); // Update background immediately
-        canvas.requestRenderAll(); // Redraw canvas
-    }, { crossOrigin: 'anonymous' }); // Needed for loading from data URLs/external sources if applicable
-}
-
-/**
- * Adds a text object to the canvas based on user input.
- */
-function addText() {
-    if (typeof fabric === 'undefined' || !canvas) return;
-    const textValue = textInput.value.trim(); // Get text from input
-    const textColor = textColorInput.value; // Get color from input
-    if (!textValue) return; // Don't add empty text
-
-    const text = new fabric.Textbox(textValue, { // Use Textbox for multi-line support
-        left: canvas.getWidth() / 2, // Center horizontally
-        top: canvas.getHeight() / 2, // Center vertically
-        originX: 'center',
-        originY: 'center',
-        fill: textColor, // Set text color
-        fontSize: Math.max(30, currentSize / 10), // Responsive font size
-        fontFamily: 'Inter, sans-serif', // Use specified font
-        // Styling for controls
-        transparentCorners: false,
-        cornerColor: '#3b82f6',
-        cornerSize: 10,
-        id: Date.now(), // Unique ID for the object
-        borderColor: '#3b82f6',
-        width: currentSize * 0.8, // Limit initial width
-        padding: 5, // Add some padding
-        angle: parseInt(textRotationInput.value) || 0 // Set initial rotation
-    });
-    canvas.add(text); // Add to canvas
-    canvas.setActiveObject(text); // Select the new text
-    finalizeObjectPosition(text); // Ensure it's wrapped correctly initially
-    updateAllClones(); // Update ghosts for all objects
-    updateTilePreview(true); // Update background immediately
-    canvas.requestRenderAll(); // Redraw canvas
-    textInput.value = ''; // Clear the input field
-}
-
-/**
- * Deletes the currently selected object(s) from the canvas.
- */
-function deleteSelectedObject() {
-    if (!canvas) return;
-    const activeObject = canvas.getActiveObject();
-    // Only delete if an object is selected and it's not a ghost or background
-    if (activeObject && !activeObject._isGhostClone && !activeObject._isBackground) {
-        // Handle multi-selection (group)
-        if (activeObject.type === 'activeSelection') {
-            activeObject.getObjects().forEach(obj => canvas.remove(obj)); // Remove each object in the group
-            canvas.discardActiveObject(); // Deselect the group remnants
-        } else {
-            // Handle single object selection
-            canvas.remove(activeObject); // Remove the single object
-        }
-        updateAllClones(); // Update ghosts after deletion
-        updateTilePreview(true); // Update background immediately
-        canvas.requestRenderAll(); // Redraw canvas
-        hideControls(); // Hide the controls panel 
+         // Ensure the original object is on top of its newly created ghosts
+         canvas.bringToFront(obj);
+         // console.log(`Created 8 ghosts for ${originalId}`);
     }
-    updateTilePreview(true);
-}
 
 
-/**
- * Clones the currently selected object(s).
- */
-function cloneSelectedObject() {
-    if (!canvas) return;
-    const activeObject = canvas.getActiveObject();
-    // Only clone if a non-ghost, non-background object is selected
-    if (!activeObject || activeObject._isGhostClone || activeObject._isBackground) return;
+    /**
+     * Updates ghost clones ONLY for a specific object.
+     * Removes existing ghosts for that object and recreates them.
+     * @param {fabric.Object} obj - The original object to update ghosts for.
+     */
+    function updateAllClonesForObject(obj) {
+        if (!isValidObject(obj) || !canvas) return;
+        // console.log(`Updating clones for object: ${obj.id}`);
+        removeGhostClonesForObject(obj.id);
+        createGhostClonesForObject(obj);
+        canvas.requestRenderAll(); // Request render after updating
+    }
 
-    // Finalize the original object's position first to ensure clones are based on wrapped position
-    finalizeObjectPosition(activeObject);
+    /**
+      * Updates all ghost clones on the canvas.
+      * Removes all existing ghosts and recreates them for all original objects.
+      */
+    function updateAllClones() {
+        if (!canvas) return;
+        console.log("Updating ALL clones...");
+        const originalObjects = canvas.getObjects().filter(isValidObject);
 
-    activeObject.clone(function (clonedObj) {
-        canvas.discardActiveObject(); // Deselect the original
-        clonedObj.set({
-            left: clonedObj.left + 15, // Offset the clone slightly
-            top: clonedObj.top + 15,
-            evented: true, // Make the clone interactive
-            id: Date.now() // Assign a unique ID (optional)
+        // Remove all existing ghosts first
+        removeAllGhostClones();
+
+        // Recreate ghosts for each original object
+        originalObjects.forEach(obj => {
+            createGhostClonesForObject(obj);
         });
 
-        // Handle cloning a multi-selection (group)
-        if (clonedObj.type === 'activeSelection') {
-            clonedObj.canvas = canvas; // Assign canvas reference to the cloned group
-            clonedObj.forEachObject(function (obj) { canvas.add(obj); }); // Add each object in the cloned group
-            clonedObj.setCoords(); // Update group coordinates
-        } else {
-            // Handle cloning a single object
-            canvas.add(clonedObj); // Add the single cloned object
-        }
-        canvas.setActiveObject(clonedObj); // Select the new clone(s)
-        finalizeObjectPosition(clonedObj); // Finalize the clone's position (wrap if needed)
-        updateAllClones(); // Update ghosts for all objects
-        updateTilePreview(true); // Update background immediately
-        canvas.requestRenderAll(); // Redraw canvas
-    }, ['_isGhostClone', '_isBackground']); // Ensure custom properties are NOT cloned
-    updateTilePreview(true);
-}
+         // Ensure originals are on top of their ghosts after creation
+         originalObjects.forEach(obj => canvas.bringToFront(obj));
 
-// --- Input Event Handlers ---
-
-/**
- * Handles changes to the canvas size input.
- * Re-initializes the canvas with the new size (clears existing content).
- */
-function handleCanvasSizeChange(e) {
-    let newSize = parseInt(e.target.value, 10);
-    // Clamp size within limits
-    newSize = Math.max(50, Math.min(1024, newSize));
-    if (isNaN(newSize)) newSize = currentSize; // Revert if invalid input
-    e.target.value = newSize; // Update input field with clamped value
-
-    if (newSize !== currentSize) {
-        currentSize = newSize;
-        console.log("Canvas size changed. Re-initializing (clears content).");
-        // Re-initialize everything: canvas, listeners, clones, preview
-        initCanvas();
+        canvas.requestRenderAll();
+        console.log("All clones updated.");
     }
-}
 
-/**
- * Handles the file input change event for loading images.
- */
-function handleImageLoad(e) {
-    const file = e.target.files[0];
-    if (file && file.type === "image/png") { // Only allow PNGs
-        const reader = new FileReader();
-        reader.onload = function (event) { addImage(event.target.result); } // Add image on successful read
-        reader.onerror = function (err) { console.error("FileReader error:", err); alert("Error reading file."); }
-        reader.readAsDataURL(file); // Read file as data URL
-        e.target.value = null; // Reset file input
-    } else if (file) {
-        alert("Please select a PNG file."); // Alert if wrong file type
-        e.target.value = null; // Reset file input
-    }
-}
 
-/**
- * Handles changes to the scale range slider for the selected object.
- */
-function handleScaleChange(e) {
-    if (!canvas) return;
-    const activeObject = canvas.getActiveObject();
-    const scale = parseFloat(e.target.value);
-    // Apply only to single, non-ghost, non-background objects
-    if (activeObject && activeObject.type !== 'activeSelection' && !activeObject._isGhostClone && !activeObject._isBackground) {
-        activeObject.scale(scale).setCoords(); // Apply scale and update coordinates
-        scaleValue.textContent = scale.toFixed(2); // Update display
-        // No need to call finalizeObjectPosition here, object:modified handles it
-        updateAllClones(); // Update ghosts based on new scale
-        updateTilePreview(); // Update preview (debounced)
-        canvas.requestRenderAll(); // Request redraw
-    }
-}
+    // --- Dragging and Positioning ---
 
-/**
- * Handles changes to the rotate range slider for the selected object.
- */
-function handleRotateChange(e) {
-    if (!canvas) return;
-    const activeObject = canvas.getActiveObject();
-    const angle = parseInt(e.target.value, 10);
-    // Apply only to single, non-ghost, non-background objects
-    if (activeObject && activeObject.type !== 'activeSelection' && !activeObject._isGhostClone && !activeObject._isBackground) {
-        activeObject.set('angle', angle).setCoords(); // Set angle and update coordinates
-        rotateValue.textContent = `${angle}°`; // Update display
-        // No need to call finalizeObjectPosition here, object:modified handles it
-        updateAllClones(); // Update ghosts based on new angle
-        updateTilePreview(); // Update preview (debounced)
-        canvas.requestRenderAll(); // Request redraw
-    }
-}
+    /**
+     * Handles the continuous movement (dragging) of an object.
+     * Updates the positions of the *existing* ghost clones in real-time.
+     * Triggers debounced preview updates.
+     * FIX: Prevents creation of duplicate ghosts during drag.
+     */
+    function handleObjectMoving(options) {
+        if (!isDragging || !options.target) return; // Only if dragging is active
+        const obj = options.target;
+        if (!isValidObject(obj)) return; // Only move original objects
 
-/**
- * Handles changes to the color picker for the selected text object.
- */
-function handleSelectedTextColorChange(e) {
-    if (!canvas) return;
-    const activeObject = canvas.getActiveObject();
-    // Apply only to single text objects (textbox or i-text), not ghosts/background
-    if (activeObject && (activeObject.type === 'textbox' || activeObject.type === 'i-text') && !activeObject._isGhostClone && !activeObject._isBackground) {
-        activeObject.set('fill', e.target.value); // Set text fill color
-        // Color changes might not trigger object:modified, so update manually
-        updateAllClones();
+        const canvasWidth = canvas.getWidth();
+        const canvasHeight = canvas.getHeight();
+        const originalId = obj.id;
+
+        // Find existing ghosts for this object
+        const ghosts = canvas.getObjects().filter(o => o._isGhostClone && o._originalId === originalId);
+
+        const positions = [
+            { x: -canvasWidth, y: -canvasHeight }, { x: 0, y: -canvasHeight }, { x: canvasWidth, y: -canvasHeight },
+            { x: -canvasWidth, y: 0 },                                         { x: canvasWidth, y: 0 },
+            { x: -canvasWidth, y: canvasHeight }, { x: 0, y: canvasHeight }, { x: canvasWidth, y: canvasHeight }
+        ];
+
+        // Update positions of the EXISTING ghosts
+        ghosts.forEach((ghost, i) => {
+            if (positions[i]) { // Check if position exists (should always be 8)
+                 ghost.set({
+                     left: obj.left + positions[i].x,
+                     top: obj.top + positions[i].y,
+                     // Also update angle/scale if needed during drag, though less common
+                     // angle: obj.angle,
+                     // scaleX: obj.scaleX,
+                     // scaleY: obj.scaleY
+                 });
+                 ghost.setCoords(); // Update ghost's coordinates
+            }
+        });
+
+        // Debounced preview update
         updateTilePreview();
-        canvas.requestRenderAll(); // Request redraw
-    }
-}
-
-/**
- * Handles global keydown events for shortcuts.
- */
-function handleKeyDown(e) {
-    if (!canvas) return;
-    const activeElement = document.activeElement;
-    // Check if focus is on an input field to avoid conflicts
-    const isInputFocused = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA';
-
-    // Delete object shortcut (Delete or Backspace)
-    if ((e.key === 'Delete' || e.key === 'Backspace') && canvas.getActiveObject() && !isInputFocused) {
-        if (e.key === 'Backspace') e.preventDefault(); // Prevent browser back navigation
-        deleteSelectedObject();
-    }
-    // Toggle preview quality shortcut (Shift + Q) - Keep if quality toggle is used
-    // if (e.key === 'Q' && e.shiftKey && !isInputFocused) {
-    //     e.preventDefault(); // Prevent typing 'Q'
-    //     togglePreviewQuality();
-    // }
-}
-
-/**
- * Exports the current canvas content as a seamless PNG pattern.
- * Renders the canvas *without* ghosts on a temporary canvas,
- * tiles it 3x3, extracts the center tile, and triggers a download.
- */
-function exportPattern() {
-    const tilePreviewStyle = window.getComputedStyle(tilePreview);
-    const tilePreviewUrl = tilePreviewStyle.getPropertyValue('--tile-preview');
-
-    if (!tilePreviewUrl || tilePreviewUrl === 'none') {
-        alert("No preview available to export.");
-        return;
+        // No need to call requestRenderAll here, Fabric handles it during move
     }
 
-    // Create a temporary anchor element to trigger the download
-    const link = document.createElement('a');
-    link.download = `seamless_pattern_${currentSize}x${currentSize}.png`;
-    link.href = tilePreviewUrl.replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); // Clean up the URL
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
+    /**
+     * Handles the mouse up event, finalizing drag operations.
+     * Finalizes object position (wrapping) and updates clones/preview.
+     */
+    function handleMouseUp(options) {
+        if (!isDragging) return; // Only act if we were dragging
 
-// --- Initial Setup ---
-// --- NEW: Updated DOMContentLoaded listener ---
-document.addEventListener('DOMContentLoaded', (event) => {
-    console.log("DOM fully loaded and parsed");
+        const target = options.target || canvas.getActiveObject(); // Get target from event or active obj
 
-    // Check repeatedly if Fabric.js library is loaded
+        if (isValidObject(target)) {
+            console.log(`Mouse up on: ${target.id}`);
+            // Finalize position *before* updating clones
+            const wrapped = finalizeObjectPosition(target);
+             // Update clones *after* position is final
+             // Use updateAllClonesForObject for efficiency if only one object moved
+             updateAllClonesForObject(target);
+             updateTilePreview(true); // Immediate preview update
+             canvas.requestRenderAll();
+        }
+         isDragging = false; // Reset dragging flag regardless
+    }
+
+    /**
+     * Finalizes an object's position by wrapping it around the canvas edges
+     * if its center moves off-canvas. Operates based on object center point.
+     * @param {fabric.Object} obj - The object to finalize.
+     * @returns {boolean} - True if the object's position was changed, false otherwise.
+     */
+    function finalizeObjectPosition(obj) {
+        if (!isValidObject(obj) || !canvas) return false;
+
+        const canvasWidth = canvas.getWidth();
+        const canvasHeight = canvas.getHeight();
+        let needsUpdate = false;
+        let newLeft = obj.left;
+        let newTop = obj.top;
+        const center = obj.getCenterPoint(); // Get object's center
+
+        // Wrap horizontally based on center
+        if (center.x > canvasWidth) newLeft -= canvasWidth;
+        else if (center.x < 0) newLeft += canvasWidth;
+
+        // Wrap vertically based on center
+        if (center.y > canvasHeight) newTop -= canvasHeight;
+        else if (center.y < 0) newTop += canvasHeight;
+
+        // Apply changes if needed
+        if (newLeft !== obj.left || newTop !== obj.top) {
+            obj.set({ left: newLeft, top: newTop });
+            obj.setCoords(); // IMPORTANT: Update object's internal coordinates
+            // console.log(`Wrapped object ${obj.id} to ${newLeft}, ${newTop}`);
+            needsUpdate = true;
+        }
+        return needsUpdate;
+    }
+
+    // --- Layering ---
+
+    /**
+     * Brings the selected object layer (object + ghosts) forward.
+     */
+    function bringLayerForward() {
+        const activeObject = canvas.getActiveObject();
+        if (!isValidObject(activeObject) || activeObject.type === 'activeSelection') return; // Only single objects
+
+        const originalId = activeObject.id;
+        const layerObjects = canvas.getObjects().filter(o => o.id === originalId || (o._isGhostClone && o._originalId === originalId));
+
+        // Bring all parts of the layer to the front
+        layerObjects.forEach(o => canvas.bringToFront(o));
+
+        // Now, ensure correct internal stacking (ghosts behind original)
+        const original = layerObjects.find(o => o.id === originalId);
+        const ghosts = layerObjects.filter(o => o._isGhostClone);
+
+        if (original) {
+            canvas.bringToFront(original); // Ensure original is absolutely last (topmost) in this group
+            // Ghosts were already brought forward, so they should be right below the original
+        }
+
+        canvas.requestRenderAll();
+        updateTilePreview(true); // Update preview to reflect layering change
+        console.log(`Brought layer ${originalId} forward.`);
+    }
+
+    /**
+     * Sends the selected object layer (object + ghosts) backward.
+     */
+    function sendLayerBackward() {
+        const activeObject = canvas.getActiveObject();
+        if (!isValidObject(activeObject) || activeObject.type === 'activeSelection') return; // Only single objects
+
+        const originalId = activeObject.id;
+        const layerObjects = canvas.getObjects().filter(o => o.id === originalId || (o._isGhostClone && o._originalId === originalId));
+
+        // Send all parts of the layer to the back
+        layerObjects.forEach(o => canvas.sendToBack(o));
+
+         // Re-establish correct internal stacking (ghosts behind original)
+         // Find the background rectangle to ensure we don't go behind it.
+         const bgRectIndex = canvas.getObjects().findIndex(o => o._isBackground);
+
+         const original = layerObjects.find(o => o.id === originalId);
+         const ghosts = layerObjects.filter(o => o._isGhostClone);
+
+         // Move ghosts first, ensuring they stay above the background
+         ghosts.forEach(ghost => canvas.moveTo(ghost, bgRectIndex + 1));
+
+         // Then move the original object on top of its ghosts
+         if (original) {
+             const lowestGhostIndex = canvas.getObjects().indexOf(ghosts[0]); // Index of the first ghost
+             canvas.moveTo(original, lowestGhostIndex + ghosts.length); // Move original above all its ghosts
+         }
+
+
+        canvas.requestRenderAll();
+        updateTilePreview(true); // Update preview to reflect layering change
+        console.log(`Sent layer ${originalId} backward.`);
+    }
+
+    // --- UI Update Functions ---
+
+    /**
+     * Updates the control panel based on the selected object.
+     */
+    function updateControlsUI(e) {
+        const activeObject = canvas.getActiveObject();
+
+        if (!isValidObject(activeObject)) {
+            hideControls();
+            return;
+        }
+
+        objectControls.classList.remove('hidden');
+
+        let currentScale = 1;
+        let currentAngle = 0;
+        let currentFill = '#000000';
+        let isText = false;
+        let isGroup = activeObject.type === 'activeSelection';
+
+        // Handle single selection
+        if (!isGroup) {
+            currentScale = activeObject.scaleX || 1; // Assuming uniform scaling
+            currentAngle = Math.round(activeObject.angle || 0);
+            isText = activeObject.type === 'textbox' || activeObject.type === 'i-text';
+            if (isText) {
+                currentFill = activeObject.get('fill');
+            }
+        }
+
+        // Enable/disable controls based on selection type
+        scaleRange.disabled = isGroup;
+        scaleInput.disabled = isGroup;
+        rotateRange.disabled = isGroup;
+        rotateInput.disabled = isGroup;
+        selectedTextColorControl.classList.toggle('hidden', !isText || isGroup);
+        sendBackBtn.disabled = isGroup; // Disable layering for groups for now
+        bringFrontBtn.disabled = isGroup;
+
+        // Update control values
+        if (!isGroup) {
+            scaleRange.value = currentScale;
+            scaleInput.value = currentScale.toFixed(2);
+            rotateRange.value = currentAngle;
+            rotateInput.value = currentAngle;
+            if (isText) {
+                selectedTextColorInput.value = currentFill;
+            }
+        } else {
+            // Reset or show placeholder for groups
+            scaleRange.value = 1;
+            scaleInput.value = '---';
+            rotateRange.value = 0;
+            rotateInput.value = '---';
+        }
+    }
+
+    /**
+     * Hides the selected object control panel.
+     */
+    function hideControls() {
+        objectControls.classList.add('hidden');
+        // Optionally reset control values when hidden
+        scaleRange.value = 1;
+        scaleInput.value = 1;
+        rotateRange.value = 0;
+        rotateInput.value = 0;
+        selectedTextColorInput.value = '#000000';
+    }
+
+    // --- Preview Update ---
+
+    /**
+     * Updates the tile preview background.
+     * Renders the canvas content (including visible ghosts) to a data URL.
+     * @param {boolean} immediate - If true, update immediately; otherwise, debounce.
+     */
+    function updateTilePreview(immediate = false) {
+        if (!canvas) return;
+        clearTimeout(previewUpdateTimeout);
+
+        const doUpdate = () => {
+            // Ensure all objects (including ghosts) are rendered correctly
+            // Ghosts should already be positioned correctly by updateAllClones or handleObjectMoving
+            canvas.renderAll(); // Ensure canvas is up-to-date
+
+            // Create data URL directly from the main canvas
+            // We rely on preserveObjectStacking and correct ghost placement now
+             const dataURL = canvas.toDataURL({
+                 format: 'png',
+                 quality: 1, // Use high quality for preview
+                 // Exclude the background rectangle if you want transparency in the preview itself
+                 // This requires the canvas element to have a transparent background
+                 // multiplier: 1 // Use native dimensions
+             });
+
+
+            // Apply to the preview div
+            tilePreview.style.backgroundImage = `url(${dataURL})`;
+            tilePreview.style.backgroundSize = `${currentSize}px ${currentSize}px`;
+            // console.log("Tile preview updated.");
+        };
+
+        if (immediate) {
+            doUpdate();
+        } else {
+            // Debounce the update
+            previewUpdateTimeout = setTimeout(doUpdate, 150); // Adjust delay as needed (e.g., 150ms)
+        }
+    }
+
+
+    // --- Export ---
+
+    /**
+     * Exports the current canvas content as a seamless PNG pattern.
+     * Uses the generated preview data URL directly.
+     */
+    function exportPattern() {
+        if (!canvas) return;
+
+         // Temporarily make all ghosts visible for the export render
+         const originalVisibilities = new Map();
+         canvas.getObjects().forEach(obj => {
+             if (obj._isGhostClone) {
+                 originalVisibilities.set(obj.id, obj.visible);
+                 obj.visible = true;
+             }
+              // Hide selection controls during export
+             obj.set({
+                 hasControls: false,
+                 hasBorders: false
+             });
+         });
+         canvas.discardActiveObject(); // Deselect any active object
+         canvas.renderAll(); // Render with ghosts visible and no controls
+
+
+        // Generate Data URL from the canvas state *with* ghosts visible
+        const dataURL = canvas.toDataURL({
+            format: 'png',
+            quality: 1,
+             // Ensure we get the exact canvas dimensions
+             width: currentSize,
+             height: currentSize,
+             left: 0,
+             top: 0
+        });
+
+         // Restore original ghost visibility and controls
+         canvas.getObjects().forEach(obj => {
+             if (obj._isGhostClone && originalVisibilities.has(obj.id)) {
+                 obj.visible = originalVisibilities.get(obj.id);
+             }
+             // Restore controls (might need more specific logic if they were hidden selectively)
+             obj.set({
+                 hasControls: true,
+                 hasBorders: true
+             });
+         });
+         canvas.renderAll(); // Render back to normal state
+
+
+        // Trigger download
+        const link = document.createElement('a');
+        link.download = `seamless_pattern_${currentSize}x${currentSize}.png`;
+        link.href = dataURL;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        console.log("Exported pattern.");
+    }
+
+
+    // --- Start the application ---
+    // Wait for Fabric.js to be ready (it's deferred)
     const checkFabric = setInterval(() => {
         if (typeof fabric !== 'undefined') {
-            clearInterval(checkFabric); // Stop checking once loaded
-            console.log("Fabric.js detected.");
-            initCanvas(); // Initialize the canvas
-
-            // Optional: Initial render with slight delay to ensure everything is ready
-            // This can sometimes help if elements aren't positioned correctly immediately
-            setTimeout(() => {
-                console.log("Performing initial render and preview update.");
-                canvas.renderAll();
-                updateTilePreview(true); // Update preview immediately after init
-            }, 100);
+            clearInterval(checkFabric);
+            initCanvas(); // Initialize Fabric canvas and listeners
         } else {
             console.log("Waiting for Fabric.js...");
         }
-    }, 100); // Check every 100ms
-});
+    }, 100);
+
+}); // End DOMContentLoaded

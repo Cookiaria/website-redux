@@ -1,8 +1,8 @@
 ---
 ttitle: seamless tile editor
 layout: default
-description: pattern generator for tiling backgrounds (like those in windows, or for retro websites)
-image: /assets/images/garb.png
+description: tile editor for css background-image tiling and for the windows "tiled wallpaper" option. very buggy in the layer side of things, but who cares, it doesn't require an account. ⚠️ not tested for mobile !! ⚠️
+image: /tool_assets/logos/tile-editor.png
 ---
 
 <style>
@@ -12,77 +12,102 @@ image: /assets/images/garb.png
 
     .ca-maincontent {
         padding: 0;
+        min-height: unset !important;
     }
 </style>
 
 <link rel="stylesheet" href="/tool_assets/tile-editor/main.css">
-
-<script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js" defer></script>
 
-<div class="bg-gray-100 h-screen overflow-hidden">
+<div id="tile-editor-app">
+
     <div class="settings-panel">
-        <h1 style="font-size: 24px; font-weight: bold;">awesome tile editor</h1>
+        <h1>Tile Editor</h1>
 
-        <div>
-            <label for="canvasSize" class="text-sm font-medium">canvas size (px):</label>
-            <input type="number" id="canvasSize" value="256" min="50" max="1024" step="1"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+        <div class="control-group">
+            <label for="canvasSize">Canvas Size (px):</label>
+            <input type="number" id="canvasSize" value="256" min="50" max="1024" step="1" class="input-field">
         </div>
 
-        <div>
-            <label for="imageLoader" class="text-sm font-medium  ">Add Image (PNG):</label>
-            <input type="file" id="imageLoader" accept=".png"
-                class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+        <div class="control-group">
+            <label for="imageLoader">Add Image (PNG):</label>
+            <input type="file" id="imageLoader" accept=".png" class="input-file">
         </div>
 
-        <div class="border-t pt-4">
-            <h3 class="text-lg font-semibold   mb-2">Add Text</h3>
-            <label for="textInput" class="text-sm font-medium  ">Text:</label>
-            <input type="text" id="textInput" placeholder="Enter text or glyph"
-                class="mt-1 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-            <label for="textColor" class="text-sm font-medium  ">Color:</label>
-            <input type="color" id="textColor" value="#000000"
-                class="mt-1 mb-2 block w-full h-10 rounded-md border-gray-300 cursor-pointer">
-            <label for="textRotation" class="text-sm font-medium  ">Rotation:</label>
-            <input type="range" id="textRotation" min="0" max="360" value="0"
-                class="mt-1 mb-2 block w-full cursor-pointer">
-            <span id="textRotationValue" class="text-sm text-gray-500">0°</span>
-            <button id="addTextBtn" class="w-full">Add Text</button>
-        </div>
-
-        <div id="objectControls" class="border-t pt-4 space-y-4 hidden">
-            <h3 class="text-lg font-semibold   mb-2">Selected Object</h3>
-            <div>
-                <label for="scaleRange" class="text-sm font-medium  ">Scale:</label>
-                <input type="range" id="scaleRange" min="0.1" max="5" step="0.05" value="1"
-                    class="mt-1 block w-full cursor-pointer">
-                <span id="scaleValue" class="text-sm text-gray-500">1.00</span>
+        <div class="control-section">
+            <h3>Add Text</h3>
+            <div class="control-group">
+                <label for="textInput">Text:</label>
+                <input type="text" id="textInput" placeholder="Enter text or glyph" class="input-field">
             </div>
-            <div>
-                <label for="rotateRange" class="text-sm font-medium  ">Rotate:</label>
-                <input type="range" id="rotateRange" min="0" max="360" step="1" value="0"
-                    class="mt-1 block w-full cursor-pointer">
-                <span id="rotateValue" class="text-sm text-gray-500">0°</span>
+            <div class="control-group">
+                <label for="textColor">Color:</label>
+                <input type="color" id="textColor" value="#000000" class="input-color">
             </div>
-            <div id="selectedTextColorControl" class="hidden">
-                <label for="selectedTextColor" class="text-sm font-medium  ">Text Color:</label>
-                <input type="color" id="selectedTextColor"
-                    class="mt-1 block w-full h-10 rounded-md border-gray-300 cursor-pointer">
+            <div class="control-group">
+                <label for="textRotation">Initial Rotation:</label>
+                <div class="slider-container">
+                    <input type="range" id="textRotation" min="0" max="360" value="0" class="input-range">
+                    <input type="number" id="textRotationInput" min="0" max="360" value="0" class="input-number-small">
+                    <span>°</span>
+                </div>
             </div>
-            
-            <button id="deleteBtn" class="w-full bg-red-500 hover:bg-red-600">Delete Object</button>
-            <button id="cloneBtn" class="w-full bg-green-500 hover:bg-green-600">Clone Object</button>
+            <button id="addTextBtn" class="button button-primary">Add Text</button>
         </div>
 
-        <div class="border-t pt-4 mt-auto"> <button id="exportBtn" class="w-full">Export as PNG</button>
+        <div id="objectControls" class="control-section hidden">
+            <h3>Selected Object</h3>
+
+            <div class="control-group">
+                <label for="scaleRange">Scale:</label>
+                <div class="slider-container">
+                    <input type="range" id="scaleRange" min="0.1" max="5" step="0.05" value="1" class="input-range">
+                    <input type="number" id="scaleInput" min="0.1" max="5" step="0.05" value="1"
+                        class="input-number-small">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label for="rotateRange">Rotate:</label>
+                <div class="slider-container">
+                    <input type="range" id="rotateRange" min="0" max="360" step="1" value="0" class="input-range">
+                    <input type="number" id="rotateInput" min="0" max="360" step="1" value="0"
+                        class="input-number-small">
+                    <span>°</span>
+                </div>
+            </div>
+
+            <div id="selectedTextColorControl" class="control-group hidden">
+                <label for="selectedTextColor">Text Color:</label>
+                <input type="color" id="selectedTextColor" class="input-color">
+            </div>
+
+            <div class="control-subsection">
+                <h4>Layering:</h4>
+                <div class="button-group">
+                    <button id="sendBackBtn" class="button button-secondary button-flex">Send Backward</button>
+                    <button id="bringFrontBtn" class="button button-secondary button-flex">Bring Forward</button>
+                </div>
+            </div>
+
+            <div class="control-subsection">
+                <button id="cloneBtn" class="button button-success">Clone Object</button>
+                <button id="deleteBtn" class="button button-danger">Delete Object</button>
+            </div>
+        </div>
+
+        <div class="export-section">
+            <button id="exportBtn" class="button button-indigo">Export as PNG</button>
         </div>
     </div>
 
     <div class="editor-area">
-        <div class="tile-preview" id="tilePreview"></div>
-        <div id="canvasWrapper" class="canvas-container-wrapper"> <canvas id="c"></canvas> </div>
+        <div class="tile-preview"></div>
+
+        <div id="canvasWrapper" class="canvas-container-wrapper">
+            <canvas id="c"></canvas>
+        </div>
     </div>
 
-    <script src="/tool_assets/tile-editor/main.js"></script>
 </div>
+<script src="/tool_assets/tile-editor/main.js"></script>
