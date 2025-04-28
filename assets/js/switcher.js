@@ -33,7 +33,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to update the active tab
     function updateActiveTab(url) {
-        tabs.forEach(tab => {
+        // Get all tabs from both top and bottom sections
+        const allTabs = document.querySelectorAll(".ca-tablinks, .ca-bottom-tablinks");
+
+        allTabs.forEach(tab => {
             const tabUrl = tab.getAttribute("href");
             if (tabUrl === url) {
                 tab.classList.add("active");
@@ -44,9 +47,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Event listener for tab clicks
+    // Modify the click event listener for tabs
     tabs.forEach(tab => {
         tab.addEventListener("click", event => {
             event.preventDefault();
+
+            // Skip if this tab is already active
+            if (tab.classList.contains("active")) {
+                return; // Do nothing
+            }
+
             const url = tab.getAttribute("href");
             loadPage(url);
         });

@@ -14,6 +14,7 @@
     --accent-color: #f86;
     --header-color: #202025;
     --body-color: #16161a;
+    --border-color: rgba(255, 255, 255, 0.25);
     --background-color: #0F0F12;
 
     --background-tile: url(/assets/images/tiles/cattile_dark.png);
@@ -23,8 +24,6 @@
 
 
     --shadow: rgba(0, 0, 0, 0.5) 0px 0px 28px;
-
-    --border-color: rgba(255, 255, 255, 0.25);
 
     --general-roundness: 8px;
     --image-roundness: 16px;
@@ -46,8 +45,7 @@
             #dc6eff 78.57%,
             #ff6efa 85.71%,
             #fe6fc3 92.86%,
-            #fe7e6f 100%)
-        /* last color must be the same one as the first! */
+            #fe7e6f 100%);
 }
 
 @media (prefers-color-scheme: light) {
@@ -57,9 +55,36 @@
         --header-color: rgb(218, 218, 236);
         --body-color: rgb(237, 238, 247);
         --background-color: rgb(204, 204, 204);
+        --border-color: rgba(0, 0, 0, 0.5);
 
         --background-tile: url(/assets/images/tiles/cattile_light.png);
         --background-tile-opacity: 0.05;
+
+        --rainbow-colors: linear-gradient(90deg,
+                #c9564c 0%,
+                #c98f3d 7.14%,
+                #d9d942 14.29%,
+                #a6d942 21.43%,
+                #5cbf42 28.57%,
+                #3aa94b 35.71%,
+                #3abfbf 42.86%,
+                #3abfbf 50%,
+                #3a7ed9 57.14%,
+                #3a7ed9 64.29%,
+                #3a7ed9 71.43%,
+                #a33ad9 78.57%,
+                #d93acb 85.71%,
+                #d93a9c 92.86%,
+                #c9564c 100%);
+    }
+
+    .ca-rainbow span {
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 3px;
     }
 }
 
@@ -311,6 +336,15 @@ a.ca-bottom-tablinks:nth-child(1) {
     border-top: 1px var(--border-color) solid;
     border-top-left-radius: var(--general-roundness);
     border-top-right-radius: var(--general-roundness);
+    transition-duration: 0.1s;
+}
+
+.ca-bottom-tablinks.active {
+    top: 6px;
+    border-top: 1px var(--border-color) solid;
+    border-top-left-radius: var(--general-roundness);
+    border-top-right-radius: var(--general-roundness);
+    color: var(--accent-color);
     transition-duration: 0.1s;
 }
 
