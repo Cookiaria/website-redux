@@ -1,3 +1,5 @@
+// =================== Scale down for small screens ===================
+
 function adjustMainScale() {
     const mainElement = document.querySelector('main');
     const container = document.querySelector('#ca-everything');
@@ -12,13 +14,18 @@ function adjustMainScale() {
 
     const viewportWidth = window.innerWidth;
 
+    // Reset all transformations
     mainElement.style.transform = '';
-    mainElement.style.transformOrigin = 'center top';
+    mainElement.style.width = '';
+    mainElement.style.height = '';
 
     if (viewportWidth < minWidth) {
         const scale = viewportWidth / minWidth;
         mainElement.style.transform = `scale(${scale})`;
-        mainElement.style.width = `${minWidth}px`; // Ensure we're scaling from minWidth
+        mainElement.style.width = `${minWidth}px`;
+        // Compensate for the scaling by adjusting the height
+        mainElement.style.height = `${mainElement.scrollHeight / scale}px`;
+        mainElement.style.transformOrigin = 'center top';
     } else if (viewportWidth > entireWidth) {
         mainElement.style.width = `${entireWidth}px`;
     } else {
