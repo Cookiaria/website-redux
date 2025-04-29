@@ -47,14 +47,14 @@ description: a lil' bit about me, cookiaria!
     .card {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 16px;
     }
 
     .card-text h2 {
         margin: 0;
     }
 
-    @media (max-width: 540px) {
+    @media (max-width: 565px) {
         .card {
             flex-direction: column;
             text-align: center;
@@ -75,9 +75,23 @@ description: a lil' bit about me, cookiaria!
     }
 
     .pill-links p {
-        padding: 3px 6px;
+        padding: 4px 8px;
         border-radius: var(--general-roundness);
         background-color: var(--background-color);
+        border: 1px solid color-mix(in srgb, var(--border-color), transparent 25%);
+    }
+
+    @media (max-width: 565px) {
+        .pill-links {
+            display: flex;
+            flex-direction: column;
+            width: fit-content;
+        }
+
+        .pill-links p {
+            width: fit-content;
+            margin: 0 auto;
+        }
     }
 
     .center {
@@ -90,7 +104,7 @@ description: a lil' bit about me, cookiaria!
         <img src="/assets/images/hi.png" class="stupid">
         <div class="card-text">
             <h2>hi! my name's <span class="ca-rainbow ca-wavy">cookiaria!</span></h2>
-            <p>you can also call me cookie, or aria. <br>i'm a 21 year old furry thing that loves spending time on the internet!</p>
+            <p>you can also call me cookie, or aria. i'm a 21 year old furry thing that loves spending time on the internet!</p>
         </div>
     </div>
 </div>
@@ -102,14 +116,13 @@ more about me goes here, probably like a neofetch-looking thing
 <hr>
 
 <div class="center">
-    <h2>~ contact! ~</h2>
+    <h2>~ contact me! ~</h2>
 </div>
 
 
 <div class="pill-links">
     <p title="discord"><i class="nerd-font nf-fa-discord"></i> cookiaria</p>
     <p title="bluesky"><i class="nerd-font nf-fae-butterfly"></i> cookiaria.lol</p>
-    <p></p>
     <p title="email"><i class="nerd-font nf-oct-mail"></i> <a href="mailto:meow@cookiaria.lol">meow@cookiaria.lol</a></p>
 </div>
 

@@ -230,7 +230,7 @@ li>ol {
     z-index: -4;
 }
 
-/* shoutout ends here */
+/* ========================================================= shoutout ends here */
 
 #headerrandom {
     font-size: 16px;
@@ -422,7 +422,7 @@ a.ca-bottom-tablinks:nth-child(1) {
 
 @media (max-width: 420px) {
     .ca-maincontent {
-        min-height: unset;
+        min-height: 100%;
     }
 
     main {
