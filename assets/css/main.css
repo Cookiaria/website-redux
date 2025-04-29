@@ -420,16 +420,6 @@ a.ca-bottom-tablinks:nth-child(1) {
     box-shadow: var(--shadow);
 }
 
-@media (max-width: 420px) {
-    .ca-maincontent {
-        min-height: 100%;
-    }
-
-    main {
-        transform-origin: center top;
-    }
-}
-
 
 .ca-header-text {
     position: relative;
