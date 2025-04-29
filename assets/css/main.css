@@ -446,6 +446,7 @@ a.ca-bottom-tablinks:nth-child(1) {
 
 .ca-cookimoji {
     height: 1.7em;
+    width: 1.7em !important;
     padding-left: 3px;
     padding-right: 3px;
     margin-top: -6px;
@@ -453,7 +454,7 @@ a.ca-bottom-tablinks:nth-child(1) {
 }
 
 .ca-maincontent>img,
-.ca-maincontent>p>img {
+.ca-maincontent>p>img:not(.ca-cookimoji) {
     border-radius: var(--image-roundness);
     display: block;
     margin: 16px auto;
