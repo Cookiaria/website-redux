@@ -162,3 +162,15 @@
 .overlay img.dimmed {
     filter: brightness(50%); 
 }
+
+#gallery.gallery-loading {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    min-height: 200px;
+    overflow: hidden;
+}
+
+#gallery {
+    opacity: 1;
+    min-height: 0; 
+}

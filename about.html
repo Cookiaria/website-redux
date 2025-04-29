@@ -4,10 +4,9 @@ title: about
 description: a lil' bit about me, cookiaria!
 ---
 
-<!-- this page fucking SUCKS ! -->
-
 <style>
-    .ca-maincontent {
+
+.ca-maincontent {
         padding-bottom: 0 !important;
     }
 
@@ -25,473 +24,123 @@ description: a lil' bit about me, cookiaria!
             --accent-color: rgb(247, 100, 60);
             --header-color: rgb(235, 210, 201);
             --body-color: rgb(248, 235, 220);
-            --background-color: rgb(202, 168, 146);
+            --background-color: rgb(255, 213, 185);
         }
     }
 
-    .aboutme-container>h2,
-    .aboutme-container>p,
-    .aboutme-container>sub {
-        text-align: center;
-        font-family: var(--default-font) !important;
-        text-transform: lowercase;
-    }
-
-    .aboutme-container>p {
-        margin-bottom: 16px;
-    }
-
-    .buh {
-        opacity: 0.5;
-        text-align: center;
-        margin: 8px 0;
-        line-height: 0.5;
-        font-size: 0.8em;
-    }
-
-    .yea {
-        margin-bottom: 16px;
-    }
-
-    .aboutme-container>img {
-        display: block;
-        margin: 0 auto;
-        border-radius: 48px;
-        margin-bottom: 16px;
-    }
-
-    .about-tabs {
+    .about-container {
+        padding: 8px 16px;
         display: flex;
-        max-width: fit-content;
-        margin-left: auto;
-        margin-right: auto;
-        font-size: 0.9em;
+        align-items: center;
+        background-color: var(--background-color);
+        border-radius: var(--general-roundness);
+        border: 1px solid var(--border-color);
     }
 
-    .atablinks {
-        font-size: 1.1em;
-        padding: 4px 16px;
-        margin: 0 6px;
-        background-color: var(--header-color);
-        border: var(--border-color) 1px solid;
-        border-radius: 8px;
-        color: var(--text-color);
-        transition-duration: 0.1s;
-    }
-
-    .atablinks:hover {
-        text-decoration: none;
-        color: var(--accent-color);
-    }
-
-    h1 {
-        border: none !important;
-    }
-
-    .aboutme-container>img:nth-child(1) {
-        border: 8px var(--accent-color) solid;
-    }
-</style>
-
-<!-- styles for the "posts", aka shit where i put stuff in (interesting) -->
-<style>
-    .ca-post {
-        padding: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        margin-bottom: 12px;
-        border-radius: 8px;
-        background-color: rgb(0 0 0 / 15%);
-        display: flex;
-        align-items: flex-start;
-        box-shadow: 8px 8px 32px rgba(0, 0, 0, 0.5);
-    }
-
-    .ca-post>img {
-        margin-right: 16px;
+    .stupid {
         width: 128px;
         height: 128px;
-        object-fit: cover;
-        border-radius: 18px;
         flex-shrink: 0;
+        border-radius: var(--general-roundness);
     }
 
-    /* just in case...
-    .ca-post:nth-child(even) {
-        flex-direction: row-reverse;
-        text-align: right;
-    }
-    
-    .ca-post:nth-child(even)>img {
-        margin-right: 0;
-        margin-left: 16px;
-    } */
-
-    .ca-post>div {
-        flex: 1;
-        min-width: 0;
+    .card {
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .ca-post>div>p {
-        font-size: 18px;
-        margin: 0;
-        padding-top: 4px;
-    }
-
-    .ca-post>div>h2 {
+    .card-text h2 {
         margin: 0;
     }
 
-    .ca-post>div>h2>span {
-        font-size: 22px;
-        vertical-align: middle;
+    @media (max-width: 540px) {
+        .card {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .stupid {
+            width: 200px;
+            height: 200px;
+            margin: 8px 0;
+        }
+    }
+
+    .pill-links {
+        width: fit-content;
+        margin: 0 auto;
+        display: flex;
+        gap: 8px;
+    }
+
+    .pill-links p {
+        padding: 3px 6px;
+        border-radius: var(--general-roundness);
+        background-color: var(--background-color);
+    }
+
+    .center {
+        text-align: center;
     }
 </style>
 
-<div class="aboutme-container">
-    <img src="/assets/images/hi.png" width="256px">
-    <h2>heya, my name's <span class="ca-wavy ca-rainbow">cookiaria!</span></h2>
-    <p class="buh">she/her • 21yo • <img src="/assets/hellyea.png" class="ca-cookimoji"> • EN/ES</p>
-    <p>i'm a tech enthusiast, rhythm game loving freak, somewhat of an artist, weird music loving, tiny furry creature
-        thing that spends most of the time creating things on the internet.</p>
-    <p>currently trying to learn "web development", all with pure html, css and js! as a result, this website was made.
-    </p>
-</div>
-
-<p class="buh yea">some other things you may be interested in;</p>
-<div class="about-tabs">
-    <a class="atablinks" href="/projects" data-page="projects">projects</a>
-    <a class="atablinks" href="/cooki" data-page="projects">cooki</a>
-    <a class="atablinks" href="/gallery" data-page="projects">gallery</a>
-</div>
-
-<hr> <!-- ======================================================== -->
-
-<h1>here's a few more facts about me!</h1>
-
-<div class="facts">
-    <li>
-        i'm a furry, if that wasn't obvious already.
-    </li>
-    <br>
-    <li>
-        i have an oc named "cooki"! you can see all art i have of her at the <a href="/gallery"
-            data-page="gallery">/gallery</a>, and reference sheet at <a href="/cooki" data-page="gallery">/cooki</a>!
-    </li>
-    <br>
-    <li>
-        i really like the color <span style="color:#ff8600;font-weight: 500;">orange</span>, specifically <span
-            style="color:#ff8600;font-weight: 500;">#ff8600!</span>
-    </li>
-    <br>
-    <li>
-        i draw in extremely rare occasions... graphic design isn't my passion &lt;/3
-    </li>
-    <br>
-    <li>
-        i like screwing around with computers, both software and hardware. my main OS is Arch Linux which i've been
-        happily using for the past ~ 2 years!
-    </li>
-    <br>
-    <li>
-        i like games with rhythm elements in them. osu (mania, standard), quaver, geometry dash, etc. i just really like
-        music!<br>
-        * i mostly dislike songs with lyrics, but there are exceptions...
-    </li>
-</div>
-
-<hr> <!-- ======================================================== -->
-
-<!-- 
-<h1>
-    IM A MUSIC FREAK.
-</h1>
-<p>
-    and here's my top <span style="font-weight: bold;">3</span> favorite songs!
-</p> <br>
-
-<style>
-    .song {
-        position: relative;
-        min-height: 100px;
-        max-height: 160px;
-        color: white;
-        text-shadow: 0 0 8px black;
-        box-shadow: 8px 8px 32px rgba(0, 0, 0, 0.5);
-    }
-
-    .badnumber {
-        background-image: url(/assets/images/postbgs/badnumber.png);
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position-y: 75%;
-    }
-
-    .emme {
-        background-image: url(/assets/images/postbgs/emme.png);
-        background-repeat: no-repeat;
-        background-position-y: 25%;
-        background-position-x: 75%;
-    }
-
-    .singularity {
-        background-image: url(/assets/images/postbgs/kobaryo.png);
-        background-repeat: no-repeat;
-        background-position-y: 75%;
-        background-position-x: 30%;
-        background-size: 811px;
-    }
-
-    .badnumber>div>h1 {
-        color: rgb(255, 208, 164);
-    }
-
-    .emme>div>h1 {
-        color: #FD8521;
-    }
-
-    .emme>div>p>a {
-        color: #FD8521
-    }
-
-    .singularity>div>h1 {
-        color: #f092bf;
-    }
-
-    .singularity>div>p>a {
-        color: #f092bf
-    }
-
-    .song>div>h1 {
-        margin-top: -10px;
-        margin-bottom: 2px;
-        font-size: 55px;
-        transform: rotate(-1deg);
-    }
-
-    .song>div>p {
-        font-size: 21px;
-        margin: 0;
-    }
-
-    .songlinks {
-        position: absolute;
-    }
-
-    .sc {
-        bottom: 6px;
-        right: 8px;
-    }
-
-    .sp {
-        bottom: 32px;
-        right: 8px;
-    }
-</style>
-
-<div class="ca-posts-container">
-    <div class="ca-post song emme">
-        <div>
-            <h1>
-                emme
-            </h1>
-            <p>by: <a target="_blank" href="https://soundcloud.com/phonon_music">phonon</a></p>
-        </div>
-        <div class="songlinks sc">
-            <a target="_blank" href="https://soundcloud.com/phonon_music/emme" style="color: #FD8521;">soundcloud ></a>
-        </div>
-        <div class="songlinks sp">
-            <a target="_blank" href="https://open.spotify.com/track/3p15F46vmAIGEdwHEApt4i?si=2fdd787fc3f44d1b" style="color: #FD8521;">spotify ></a>
-        </div>
-    </div>
-
-    <div class="ca-post song badnumber">
-        <div>
-            <h1>
-                BAD NUMBER!
-            </h1>
-            <p>by <a target="_blank" href="https://tangermusic.bandcamp.com/">Tanger</a></p>
-        </div>
-        <div class="songlinks sc">
-            <a target="_blank" href="https://soundcloud.com/tangermusic/bad-number-with-disphing" style="color: rgb(255, 185, 128);">soundcloud ></a>
-        </div>
-        <div class="songlinks sp">
-            <a target="_blank" href="https://open.spotify.com/track/2HHV6zcP5wbGQglo2tNYiP?si=323a52187c784564" style="color: rgb(255, 208, 164);">spotify ></a>
-        </div>
-    </div>
-
-    <div class="ca-post song singularity">
-        <div>
-            <h1>
-                Singularity at 2.64e+6 BPM
-            </h1>
-            <p>by: <a>Kobaryo</a></p>
-        </div>
-        <div class="songlinks sc">
-            <a target="_blank" href="https://hitnex.bandcamp.com/track/singularity-at-264e-6-bpm" style="color: #f092bf;">bandcamp ></a>
-        </div>
-        <div class="songlinks sp">
-            <a target="_blank" href="https://open.spotify.com/track/3QJ4K0POF4VurCY2IBXX2q?si=7fae70228d0441e9" style="color: #f092bf;">spotify ></a>
+<div class="about-container">
+    <div class="card">
+        <img src="/assets/images/hi.png" class="stupid">
+        <div class="card-text">
+            <h2>hi! my name's <span class="ca-rainbow ca-wavy">cookiaria!</span></h2>
+            <p>you can also call me cookie, or aria. <br>i'm a 21 year old furry thing that loves spending time on the internet!</p>
         </div>
     </div>
 </div>
-
-<br> 
-
-<img src="/assets/images/death.png" width="256" style="margin: 24px auto;">
-<p style="text-align: center;">weird mix...</p>
 
 <hr>
 
-<style>
-    /* this fucking sucks */
+more about me goes here, probably like a neofetch-looking thing
 
-    .oneshot {
-        background-image: url(/assets/images/postbgs/oneshot.png);
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position-y: 50%;
-    }
+<hr>
 
-    .rat {
-        background-image: url(/assets/images/postbgs/rat.png);
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position-y: 75%;
-    }
-
-    .adofai {
-        background-image: url(/assets/images/postbgs/adofai.jpg);
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position-y: 50%;
-    }
-
-    .geodash {
-        background-image: url(/assets/images/postbgs/gd.png);
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position-y: 75%;
-    }
-
-    .osu {
-        background-image: url(/assets/images/postbgs/osu.jpg);
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position-y: 25%;
-    }
-
-    div.song:nth-child(3) > div:nth-child(1) > p:nth-child(3) {
-        margin-bottom: 32px;
-    }
-</style>
-
-<h1>
-    you like games? i do too!
-</h1>
-
-<p>here's some games that are definitely not my hyperfixations! :3</p>
-<br>
-
-<div class="ca-posts-container">
-    <div class="ca-post oneshot">
-        <img src="/assets/games/oneshot.png">
-        <div>
-            <h2>
-                OneShot
-            </h2>
-            <p>
-                actually the greatest game of all time... great ost, great story ... it's a one-of-a-kind experience
-                that you will not regret playing... <br> <br>
-                niko has become my comfort character... <img src="/assets/images/emotes/niko_crumbs.png"
-                    class="ca-cookimoji">
-            </p>
-        </div>
-    </div>
-    <div class="ca-post rat">
-        <img src="/assets/games/rat.png">
-        <div>
-            <h2>
-                Rap Ability Test
-            </h2>
-            <p>
-                yeah its a roblox fnf game. whatever! this game is really unique, in a way that its actually way better
-                than you'd expect! custom charts are awesome, engine is suprisingly well optimized to be on roblox, its
-                genuinely fun! <br> it has a gacha system though... <img src="/assets/images/ral.png"
-                    class="ca-cookimoji">
-            </p>
-        </div>
-    </div>
-    <div class="ca-post adofai">
-        <img src="/assets/games/adofai.png">
-        <div>
-            <h2>
-                A Dance Of Fire And Ice
-            </h2>
-            <p>
-                rhythm game about moving two planets to the rhythm. funniest part is that i don't even play the game to
-                play it myself! i just like making extremely fast levels to play them with autoplay lol
-            </p>
-        </div>
-    </div>
-    <div class="ca-post geodash">
-        <img src="/assets/games/gd.svg">
-        <div>
-            <h2>
-                Geometry Dash
-            </h2>
-            <p>
-                been playing this game since update 1.9 (that's ~ 10 years!)<br>
-                everytime i try to quit i always come back and i don't know why. <br>
-                <br>
-                <img src="/assets/games/gd/star.png" class="ca-cookimoji"> 3,141 <img src="/assets/games/gd/moon.png"
-                    class="ca-cookimoji"> 314 <img src="/assets/games/gd/coin.png" class="ca-cookimoji"> 122 <img
-                    src="/assets/games/gd/silvercoin.png" class="ca-cookimoji"> 303 <img
-                    src="/assets/games/gd/demon.png" class="ca-cookimoji"> 120
-            </p>
-        </div>
-    </div>
-    <div class="ca-post osu">
-        <img src="/assets/games/osu.png">
-        <div>
-            <h2>
-                osu!
-            </h2>
-            <p>
-                <span class="ca-wavy">~ yeah...</span> here's my <a
-                    href="https://osu.ppy.sh/users/12509548">profile</a>. it's a love-hate relationship with this stupid
-                game<br>
-                <br>
-                mania (4k) 2,445pp <br>
-                standard 4,227pp
-            </p>
-        </div>
-    </div>
+<div class="center">
+    <h2>~ contact! ~</h2>
 </div>
- --> 
+
+
+<div class="pill-links">
+    <p title="discord"><i class="nerd-font nf-fa-discord"></i> cookiaria</p>
+    <p title="bluesky"><i class="nerd-font nf-fae-butterfly"></i> cookiaria.lol</p>
+    <p></p>
+    <p title="email"><i class="nerd-font nf-oct-mail"></i> <a href="mailto:meow@cookiaria.lol">meow@cookiaria.lol</a></p>
+</div>
+
+<hr>
 
 <h2>
     credits!
 </h2>
 <!-- ======================================================== -->
 <li>
-    <a target="_blank" href="https://bsky.app/profile/maximaxi.cookiaria.lol" title="bsky.app">icymaxi</a> for the <a href="/404">404
+    <a target="_blank" href="https://bsky.app/profile/maximaxi.cookiaria.lol" title="bsky.app">icymaxi</a> for the <a
+        href="/404">404
         page not found</a> page art, and art in <a href="/gallery">/gallery</a>
 </li>
 <li>
-    <a target="_blank" href="https://alsoangle.bsky.social">alsoangle</a> for the lil idiot at the bottom of this page, and art in <a
-        href="/gallery">/gallery</a>
+    <a target="_blank" href="https://alsoangle.bsky.social">alsoangle</a> for the lil idiot at the bottom of this page,
+    and art in <a href="/gallery">/gallery</a>
 </li>
 <li>
     <a target="_blank" href="https://masonry.desandro.com/">Masonry</a> for <a href="/gallery">/gallery</a> tiling
 </li>
 <li>
-    <a target="_blank" href="https://github.com/nexpid/WigglyText/blob/main/index.tsx">nexpid/WigglyText</a> for wavy text
+    <a target="_blank" href="https://github.com/nexpid/WigglyText/blob/main/index.tsx">nexpid/WigglyText</a> for wavy
+    text
 </li>
 <li>
     Jekyll & Liquid
 </li>
 <li>
-    deepseek (for some javascript, <a href="/assets/js/post-search.js">post-search.js</a>, and <a target="_blank" href="/assets/js/scale.js">scale.js</a>). <span style="opacity: 0.5; font-size: 0.75em;">(sorry)</span>
+    deepseek (for some javascript, <a href="/assets/js/post-search.js">post-search.js</a>, and <a target="_blank"
+        href="/assets/js/scale.js">scale.js</a>). <span style="opacity: 0.5; font-size: 0.75em;">(sorry)</span>
 </li>
 <li>
     qwen

@@ -15,11 +15,14 @@ function initializeRainbowText(elements) {
         const text = parentEl.textContent.trim();
         parentEl.innerHTML = '';
 
-        const colors = [
-            '#fe7e6f', '#fec46f', '#fffa6f', '#ddff6f', '#91ff6f',
-            '#6eff73', '#6fffef', '#6ea9fe', '#dc6eff', '#ff6efa',
-            '#fe6fc3', '#fe7e6f' 
-        ];
+        const gradient = getComputedStyle(parentEl)
+            .getPropertyValue('rainbow-gradient')
+
+        const colors = getComputedStyle(parentEl)
+            .getPropertyValue('--rainbow-color-list')
+            .trim()
+            .split(',')
+            .map(color => color.trim());
 
         text.split('').forEach((char, index) => {
             const span = document.createElement('span');

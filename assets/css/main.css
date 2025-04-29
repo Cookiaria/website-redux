@@ -46,6 +46,8 @@
             #ff6efa 85.71%,
             #fe6fc3 92.86%,
             #fe7e6f 100%);
+
+    --rainbow-color-list: #fe7e6f, #fec46f, #fffa6f, #ddff6f, #91ff6f, #6eff73, #6fffef, #6ea9fe, #dc6eff, #ff6efa, #fe6fc3, #fe7e6f;
 }
 
 @media (prefers-color-scheme: light) {
@@ -76,10 +78,6 @@
                 #d93acb 85.71%,
                 #d93a9c 92.86%,
                 #c9564c 100%);
-    }
-
-    .ca-rainbow span {
-        text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
     }
 
     ::-webkit-scrollbar-thumb {
@@ -424,7 +422,7 @@ a.ca-bottom-tablinks:nth-child(1) {
 
 @media (max-width: 420px) {
     .ca-maincontent {
-        min-height: 100vh;
+        min-height: unset;
     }
 
     main {
@@ -547,6 +545,21 @@ a:hover {
 
 .ca-logo-text>h2 {
     user-select: none;
+}
+
+#loadingbar {
+    position: fixed;      
+    top: 0;               
+    left: 0;
+    width: 0%;
+    height: 6px; 
+    background-color: var(--accent-color);
+    z-index: 9999;
+    opacity: 1;
+    transition:
+        width 30s linear,
+        opacity 1s ease;
+    pointer-events: none;
 }
 
 /* ----------------------- 
@@ -713,6 +726,11 @@ td {
 /* ----------------------- 
     text fx stuff 
     ----------------------- */
+
+.ca-rainbow span {
+    -webkit-text-stroke: 4px #7b1d00;
+    paint-order: stroke fill;
+}
 
 .ca-wavy-rainbow span,
 .ca-wavy span,
