@@ -88,3 +88,45 @@ document.addEventListener("DOMContentLoaded", () => {
     // Re-adjust tabs on window resize
     window.addEventListener("resize", adjustTabs);
 });
+
+// =================== Dark/white theme toggle ===================
+
+const toggleButton = document.getElementById('themebutton');
+const themeIcon = document.getElementById('themeicon');
+
+// Toggle theme and update icon
+function updateThemeIcon() {
+    document.documentElement.classList.toggle('ca-light-mode');
+
+    const isLight = document.documentElement.classList.contains('ca-light-mode');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark'); // use 'theme' consistently
+
+    toggleThemeIcon();
+}
+
+// Update icon based on current theme
+function toggleThemeIcon() {
+    if (document.documentElement.classList.contains('ca-light-mode')) {
+        themeIcon.classList.remove('nf-oct-moon');
+        themeIcon.classList.add('nf-oct-sun');
+    } else {
+        themeIcon.classList.remove('nf-oct-sun');
+        themeIcon.classList.add('nf-oct-moon');
+    }
+}
+
+toggleButton.addEventListener('click', updateThemeIcon);
+
+// On DOM load, apply saved or system theme and update icon
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme'); 
+    const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+
+    if (savedTheme === 'light' || (!savedTheme && prefersLight)) {
+        document.documentElement.classList.add('ca-light-mode');
+    } else {
+        document.documentElement.classList.remove('ca-light-mode');
+    }
+
+    toggleThemeIcon(); // make sure the icon matches the theme
+});

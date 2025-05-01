@@ -23,7 +23,7 @@
     --background-animation-time: 20s;
 
 
-    --shadow: rgba(0, 0, 0, 0.5) 0px 0px 28px;
+    --shadow: rgba(0, 0, 0, 0.25) 0px 0px 28px;
 
     --general-roundness: 8px;
     --image-roundness: 16px;
@@ -50,6 +50,10 @@
     --rainbow-color-list: #fe7e6f, #fec46f, #fffa6f, #ddff6f, #91ff6f, #6eff73, #6fffef, #6ea9fe, #dc6eff, #ff6efa, #fe6fc3, #fe7e6f;
 }
 
+/* 
+
+==== rest in peice brah ====
+
 @media (prefers-color-scheme: light) {
     :root {
         --text-color: #16161a;
@@ -61,23 +65,6 @@
 
         --background-tile: url(/assets/images/tiles/cattile_light.png);
         --background-tile-opacity: 0.05;
-
-        --rainbow-colors: linear-gradient(90deg,
-                #c9564c 0%,
-                #c98f3d 7.14%,
-                #d9d942 14.29%,
-                #a6d942 21.43%,
-                #5cbf42 28.57%,
-                #3aa94b 35.71%,
-                #3abfbf 42.86%,
-                #3abfbf 50%,
-                #3a7ed9 57.14%,
-                #3a7ed9 64.29%,
-                #3a7ed9 71.43%,
-                #a33ad9 78.57%,
-                #d93acb 85.71%,
-                #d93a9c 92.86%,
-                #c9564c 100%);
     }
 
     ::-webkit-scrollbar-thumb {
@@ -85,6 +72,50 @@
         border-radius: 3px;
     }
 }
+*/
+
+
+/*
+    =========================================
+    theme toggle stuff 
+*/
+
+html.ca-light-mode {
+    --text-color: #16161a;
+    --accent-color: rgb(247, 100, 60);
+    --header-color: rgb(218, 218, 236);
+    --body-color: rgb(237, 238, 247);
+    --background-color: rgb(204, 204, 204);
+    --border-color: rgba(0, 0, 0, 0.5);
+
+    --background-tile: url(/assets/images/tiles/cattile_light.png);
+    --background-tile-opacity: 0.05;
+}
+
+#themebutton {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    background: var(--background-color);
+    border-radius: var(--general-roundness);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+#themebutton > i {
+    color: var(--text-color);
+    font-size: 16px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 32px;
+}
+
+
 
 ::-webkit-scrollbar {
     width: 6px;
@@ -360,6 +391,7 @@ a.ca-bottom-tablinks:nth-child(1) {
 }
 
 .ca-header {
+    position: relative;
     color: var(--text-color);
     border: 1px solid var(--border-color);
     border-radius: var(--general-roundness);
@@ -402,7 +434,6 @@ a.ca-bottom-tablinks:nth-child(1) {
     justify-content: center;
     text-align: left;
 }
-
 
 .ca-maincontent {
     position: relative;
@@ -539,17 +570,14 @@ a:hover {
 }
 
 #loadingbar {
-    position: fixed;      
-    top: 0;               
+    position: absolute;      
+    bottom: 0;               
     left: 0;
-    width: 0%;
+    width: 100%;
     height: 6px; 
+    border-radius: var(--general-roundness);
     background-color: var(--accent-color);
     z-index: 9999;
-    opacity: 1;
-    transition:
-        width 30s linear,
-        opacity 1s ease;
     pointer-events: none;
 }
 
