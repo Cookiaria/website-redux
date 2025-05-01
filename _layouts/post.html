@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/main.css?v={{ '/assets/css/main.css' | file_mtime | date: '%s'}}">
     <link rel="stylesheet" href="/assets/css/syntax.css">
     <link rel="stylesheet" href="/assets/css/nerdfonts.css">
 
@@ -29,35 +28,8 @@
 
     <div id="ca-everything">
         <main>
-            <style>
-                .ca-logo-text > h2 {
-                    font-family: var(--default-font);
-                    border: none;
-                }
-            </style>
-            
-            <div class="ca-header-container">
-                <div class="ca-header-tabs">
-                    <a href="/" class="ca-tablinks" data-page="home"><i class="nerd-font nf-fa-home"></i> home</a>
-                    <a href="/posts" class="ca-tablinks" data-page="posts"><i class="nerd-font nf-fa-newspaper"></i> posts</a>
-                    <a href="/about" class="ca-tablinks" data-page="about"><i class="nerd-font nf-oct-person_fill"></i> about</a>
-                    <a href="/gallery" class="ca-tablinks" data-page="gallery"><i class="nerd-font nf-fa-photo"></i> gallery</a>
-                </div>
-            
-                <header class="ca-header">
-                    <div class="ca-header-logo">
-                        <img src="/assets/images/cate.png" onclick="randomHeader()" align="left" draggable="false">
-                    </div>
-            
-                    <div class="ca-logo-text">
-                        <h2>cookiaria - post</h2>
-                        <div class="ca-header-text">
-                            <p id="headerrandom"></p>
-                        </div>
-                    </div>
-                </header>
-            </div>
 
+            {% include header.html %}
             <script src="/assets/js/randomheaders.js"></script>
 
             <div class="ca-maincontent">
@@ -69,24 +41,25 @@
         </main>
     </div>
 
-
     <div class="ca-background-container">
         <div class="ca-background-image"></div>
         <div class="ca-background-overlay"></div>
     </div>
 
     <!-- stinky scripts -->
-    <script src="/assets/js/textfx.js"></script>
-    <script src="/assets/js/convenience.js"></script>
+    <script src="/assets/js/textfx.js?v={{ '/assets/js/textfx.js' | file_mtime | date: '%s'}}"></script>
     <script src="/assets/js/codeblocks.js"></script>
+    <script src="/assets/js/post-search.js"></script>
+    <script src="/assets/js/masonry.pkgd.min.js"></script> <!-- for /gallery -->
+    <script src="/assets/js/gallery.js?v={{ '/assets/js/gallery.js' | file_mtime | date: '%s'}}"></script> <!-- for /gallery -->
 
-    <script src="/assets/js/funy/barrel.js"></script>
+    <script src="/assets/js/switcher.js?v={{ '/assets/js/switcher.js' | file_mtime | date: '%s'}}"></script>
+    <script src="/assets/js/convenience.js?v={{ '/assets/js/convenience.js' | file_mtime | date: '%s'}}"></script>    
+
 </body>
 
 <script>
     adjustMainScale();
 </script>
-
-
 
 </html>

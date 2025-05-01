@@ -15,7 +15,7 @@ git clone https://github.com/Cookiaria/website-redux.git
 cd website-redux
 ```
 
-rewrite everything and make it your own. all you need to do is remove some html files (keep `index.html` though!), and make it your own. i made it as dynamic as possible, you can change pretty much every color easily on the `/assets/css/main.css` file, from the text color, accent color, background (color, image tile), width of the page, the border radius, etc.
+you can just rewrite everything. all you need to do is remove some html files (keep `index.html` though!), and make it your own. i made it as dynamic as possible, you can change pretty much every color easily on the `/assets/css/main.css` file, from the text color, accent color, background (color, image tile), width of the page, the border radius, etc.
 
 i'll make a template version of this in the future, but for now, this is what you get
 
