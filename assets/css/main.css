@@ -76,7 +76,6 @@
 
 
 /*
-    =========================================
     theme toggle stuff 
 */
 
@@ -115,7 +114,9 @@ html.ca-light-mode {
     line-height: 32px;
 }
 
-
+html {
+    scrollbar-gutter: stable;
+}
 
 ::-webkit-scrollbar {
     width: 6px;
@@ -126,7 +127,7 @@ html.ca-light-mode {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.25);
+    background: var(--accent-color);
     border-radius: 3px;
 }
 

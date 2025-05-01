@@ -28,7 +28,6 @@
 
     <div id="ca-everything">
         <main>
-            
             {% include header.html %}
             <script src="/assets/js/randomheaders.js"></script>
 
@@ -37,7 +36,6 @@
             </div>
 
             {% include footer.html %}
-
         </main>
     </div>
 
@@ -48,18 +46,15 @@
     </div>
 
     <!-- stinky scripts -->
+    <script src="/assets/js/switcher.js?v={{ '/assets/js/switcher.js' | file_mtime | date: '%s'}}"></script> 
     <script src="/assets/js/textfx.js?v={{ '/assets/js/textfx.js' | file_mtime | date: '%s'}}"></script>
     <script src="/assets/js/codeblocks.js"></script>
     <script src="/assets/js/post-search.js"></script>
     <script src="/assets/js/masonry.pkgd.min.js"></script> <!-- for /gallery -->
-    <script src="/assets/js/gallery.js?v={{ '/assets/js/gallery.js' | file_mtime | date: '%s'}}"></script> <!-- for /gallery -->
-
-
-    <script src="/assets/js/switcher.js?v={{ '/assets/js/switcher.js' | file_mtime | date: '%s'}}"></script>
+    <script src="/assets/js/gallery.js?v={{ '/assets/js/gallery.js' | file_mtime | date: '%s'}}"></script> <!--  for /gallery -->
 
     <script src="/assets/js/funy/barrel.js"></script>
-
-    <script src="/assets/js/convenience.js?v={{ '/assets/js/convenience.js' | file_mtime | date: '%s'}}"></script>    
+    <script src="/assets/js/convenience.js?v={{ '/assets/js/convenience.js' | file_mtime | date: '%s'}}"></script>
 
 </body>
 

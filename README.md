@@ -19,6 +19,8 @@ you can just rewrite everything. all you need to do is remove some html files (k
 
 i'll make a template version of this in the future, but for now, this is what you get
 
+also yes, i'm aware you can pretty much download all of my art by cloning the repo... i just hope this doesn't get abused, but i should proobably look up how to host a backend for it in the future. just not right now, i don't have that much time.
+
 ## credits:
 
 - Google Fonts (using Fredoka, Ubuntu Mono)
