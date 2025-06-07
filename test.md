@@ -4,6 +4,24 @@ title: super secret debug page (real)
 description: testing page
 ---
 
+<h2 class="ca-wavy">groovy...</h2>
+
+<h2 class="ca-rainbow">fruity</h2>
+
+<h2 class="ca-wavy ca-rainbow">this might be awesome?</h2>
+
+<h2 class="ca-rainbow-legacy">legacy fruity</h2>
+
+---
+
+<p class="ca-wavy">smol wave</p>
+
+<p class="ca-rainbow">smol fruity</p>
+
+<p class="ca-wavy ca-rainbow">smol wavy fruity</p>
+
+<p class="ca-rainbow-legacy">legacy smol fruity</p>
+
 # The glungus galunga bobo.
 The bongungus wagongus bubo chonko. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam laoreet tortor libero, nec laoreet sem condimentum nec. Mauris at luctus tellus. Nam eu malesuada nulla, sed condimentum augue. Aenean ut tristique lacus, in dapibus mauris. Donec posuere nisi non ipsum commodo auctor. Mauris vel viverra nulla. In mattis vulputate scelerisque. Sed malesuada quam in ligula porttitor commodo. Sed varius ut lorem eget efficitur. Etiam viverra accumsan convallis. 
 
@@ -30,15 +48,21 @@ Vestibulum nisl magna, laoreet sit amet lacinia sed, commodo nec augue. Sed fauc
 text fx
 
 <h2 class="ca-wavy">groovy...</h2>
+
 <h2 class="ca-rainbow">fruity</h2>
+
 <h2 class="ca-wavy ca-rainbow">this might be awesome?</h2>
+
 <h2 class="ca-rainbow-legacy">legacy fruity</h2>
 
 ---
 
 <p class="ca-wavy">smol wave</p>
+
 <p class="ca-rainbow">smol fruity</p>
+
 <p class="ca-wavy ca-rainbow">smol wavy fruity</p>
+
 <p class="ca-rainbow-legacy">legacy smol fruity</p>
 
 ---
@@ -60,12 +84,14 @@ text fx
 
 `Inline code`  
 
+> quote text. something big, something huge
+
 - it's time for the moment you've been waiting for...
 - one!
   - two!
   - three!
 - ready?
-- Miku Miku <span class="ca-wavy-rainbow" style="font-weight: bold;font-size:24px">BEEEEAAAM!~</span>
+- Miku Miku <i class="ca-rainbow" style="font-weight: bold;font-size:24px">BEEEEAAAM!~</i>
 
 ## top 3 cheese
 

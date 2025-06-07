@@ -1,0 +1,113 @@
+---
+layout: default
+title: debug page real
+description: another debug page
+---
+
+<style>
+    .nerd-font {
+        font-size: 1.2em;
+    }
+
+    .hall-container {
+        max-width: 600px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 16px;
+        box-sizing: border-box;
+    }
+
+    .hall-element:nth-child(even) {
+        margin: 0 0 16px auto;
+    }
+
+
+    .hall-element {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        background-color: rgb(31, 37, 75);
+        width: fit-content;
+        max-width: 100%;
+        height: 110px;
+        border-radius: var(--general-roundness);
+        margin-bottom: 16px;
+        box-sizing: border-box;
+    }
+
+
+    .hall-element img {
+        border-radius: var(--general-roundness);
+        height: 106px;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    .hall-element div {
+        padding: 0px 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .hall-element div h1 {
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .hall-element div p {
+        font-style: italic;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .maxi {
+        border: rgba(0, 68, 255, 0.5) 2px solid;
+        background-color: rgba(0, 119, 255, 0.5);
+    }
+
+    .acat {
+        border: rgba(85, 180, 243, 0.5) 2px solid;
+        background-color: rgba(85, 180, 243, 0.5);
+    }
+
+
+</style>
+
+<h2>
+    not really a debug page
+</h2>
+<p>
+    will probably appear in <a href="/about">/about</a> at some point in the future once there's enough peopl
+</p>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<h1>~ hall of friends ~</h1>
+<p>a list of really awesome people</p>
+<hr>
+
+<div class="hall-container">
+    <div class="hall-element acat">
+        <img src="https://cdn.discordapp.com/avatars/652721432618467388/37e624a4aaf6bd89b5aec01fef01c52f.webp?size=1024">
+        <div>
+            <h1>a_cat</h1>
+            <p>The King of FC Chokes</p>
+        </div>
+    </div>
+
+    <div class="hall-element maxi">
+        <img src="https://cdn.discordapp.com/attachments/1238592833611628594/1368036520442859570/AAAAAAAAAAAAA.png?ex=6816c2cb&is=6815714b&hm=933bc1e9eb8a977e9e8daf0475e81eb425b2b06bb667dc524610e791deb648df&">
+        <div>
+            <h1>IcyMaxi</h1>
+            <p>The king of all icebergs</p>
+        </div>
+    </div>
+</div>

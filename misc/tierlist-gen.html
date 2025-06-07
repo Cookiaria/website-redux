@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tier List Creator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tier-row, #unranked-entries {
+            min-height: 112px; /* h-28 */
+        }
+        .entry {
+            width: 100px;
+            height: 100px;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* Added for text centering and wrapping */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4px;
+            overflow-wrap: break-word;
+        }
+        .entry:active {
+            cursor: grabbing;
+        }
+        #context-menu {
+            position: absolute;
+            z-index: 1000;
+            display: none;
+            min-width: 150px;
+        }
+        /* Style for the confirmation modal */
+        #confirmation-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <div id="app" class="container mx-auto p-4 md:p-8">
+
+        <!-- Tier List Container -->
+        <div id="tier-list-container" class="bg-gray-800 rounded-lg shadow-2xl p-4">
+            <!-- Tiers will be dynamically inserted here -->
+        </div>
+
+        <!-- Controls -->
+        <div class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <button id="add-row-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 w-full">Add Tier Row</button>
+            <button id="export-image-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 w-full">Export as Image</button>
+            <button id="save-data-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 w-full">Save Board (JSON)</button>
+            <label class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 w-full text-center cursor-pointer">
+                Load Board (JSON)
+                <input type="file" id="import-data-input" class="hidden" accept=".json">
+            </label>
+        </div>
+
+        <!-- Unranked Entries -->
+        <div class="mt-8">
+            <h2 class="text-2xl font-semibold mb-4 text-white">Unranked Entries</h2>
+            <p class="text-gray-400 mb-4">Add new entries below or drag & drop images here.</p>
+            <div id="unranked-entries" class="bg-gray-800 rounded-lg p-4 flex flex-wrap gap-2 items-start tier-row">
+                 <!-- Entries will be added here -->
+            </div>
+            <div class="mt-4 flex flex-col sm:flex-row gap-3">
+                <input type="text" id="new-entry-text" class="flex-grow bg-gray-700 text-white border-2 border-gray-600 rounded-lg p-3 focus:outline-none focus:border-indigo-500" placeholder="Enter text for new entry...">
+                <button id="add-entry-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300">Add Text Entry</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Context Menu for Tiers -->
+    <div id="context-menu" class="bg-gray-700 border border-gray-600 rounded-lg shadow-lg p-2">
+         <!-- Context menu items will be here -->
+    </div>
+
+    <!-- Confirmation/Alert Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-xl max-w-sm mx-auto">
+            <h3 class="text-lg font-bold text-white" id="modal-title">Confirm Action</h3>
+            <p class="text-gray-300 my-4" id="modal-message">Are you sure you want to proceed?</p>
+            <div class="flex justify-end gap-3">
+                <button id="confirm-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Confirm</button>
+                <button id="cancel-btn" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tierListContainer = document.getElementById('tier-list-container');
+            const unrankedEntriesContainer = document.getElementById('unranked-entries');
+            const addRowBtn = document.getElementById('add-row-btn');
+            const addEntryBtn = document.getElementById('add-entry-btn');
+            const newEntryTextInput = document.getElementById('new-entry-text');
+            const exportImageBtn = document.getElementById('export-image-btn');
+            const saveDataBtn = document.getElementById('save-data-btn');
+            const importDataInput = document.getElementById('import-data-input');
+            const contextMenu = document.getElementById('context-menu');
+            const confirmationModal = document.getElementById('confirmation-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalMessage = document.getElementById('modal-message');
+            const confirmBtn = document.getElementById('confirm-btn');
+            const cancelBtn = document.getElementById('cancel-btn');
+
+            let draggedItem = null;
+
+            // --- INITIAL STATE ---
+            const initialTiers = [
+                { name: 'SS', color: '#FFD700' },
+                { name: 'S', color: '#C0C0C0' },
+                { name: 'A', color: '#CD7F32' },
+                { name: 'B', color: '#A9A9A9' },
+                { name: 'C', color: '#8B4513' },
+                { name: 'D', color: '#654321' }
+            ];
+
+            function initializeTiers() {
+                initialTiers.forEach(tier => createTierRow(tier.name, tier.color));
+            }
+
+            // --- TIER ROW MANAGEMENT ---
+            function createTierRow(name = 'New Tier', color = '#808080') {
+                const tierId = `tier-${Date.now()}-${Math.random()}`;
+                const tierRow = document.createElement('div');
+                tierRow.id = tierId;
+                tierRow.className = 'tier-row flex items-stretch mb-1 rounded';
+
+                const tierLabel = document.createElement('div');
+                tierLabel.className = 'w-24 md:w-32 flex-shrink-0 flex items-center justify-center font-bold text-xl md:text-2xl rounded-l';
+                tierLabel.textContent = name;
+                tierLabel.style.backgroundColor = color;
+                tierLabel.style.textShadow = '1px 1px 2px rgba(0,0,0,0.5)';
+                tierLabel.dataset.tierId = tierId;
+
+                const tierDropZone = document.createElement('div');
+                tierDropZone.className = 'flex-grow bg-gray-700 p-2 flex flex-wrap gap-2 items-start rounded-r';
+
+                tierRow.appendChild(tierLabel);
+                tierRow.appendChild(tierDropZone);
+                tierListContainer.appendChild(tierRow);
+
+                tierLabel.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    showTierContextMenu(e.pageX, e.pageY, tierLabel);
+                });
+
+                return tierRow;
+            }
+
+            addRowBtn.addEventListener('click', () => {
+                const name = prompt("Enter new tier name:", "New Tier");
+                if (name) {
+                    createTierRow(name);
+                }
+            });
+
+            // --- TEXT SCALING UTILITY ---
+            function adjustTextSize(element) {
+                if (element.style.backgroundImage || !element.textContent) {
+                    return; // Don't adjust image entries or empty text entries
+                }
+                let fontSize = 16; // Start with 1rem (16px)
+                element.style.fontSize = `${fontSize}px`;
+
+                // Keep reducing font size until the text fits within the element's bounds
+                while ((element.scrollWidth > element.clientWidth || element.scrollHeight > element.clientHeight) && fontSize > 8) {
+                    fontSize--;
+                    element.style.fontSize = `${fontSize}px`;
+                }
+            }
+
+            // --- ENTRY MANAGEMENT ---
+            function createEntry(content) {
+                const entry = document.createElement('div');
+                entry.className = 'entry bg-gray-600 rounded-md shadow-md';
+                entry.draggable = true;
+
+                if (content.startsWith('data:image')) {
+                    entry.style.backgroundImage = `url(${content})`;
+                } else {
+                    entry.textContent = content;
+                }
+                entry.dataset.content = content;
+
+                entry.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    showConfirmationModal('Are you sure you want to remove this entry?', () => {
+                        entry.remove();
+                    });
+                });
+
+                unrankedEntriesContainer.appendChild(entry);
+
+                // Adjust text size only for text entries after it's in the DOM
+                if (!content.startsWith('data:image')) {
+                    adjustTextSize(entry);
+                }
+
+                return entry;
+            }
+
+            addEntryBtn.addEventListener('click', () => {
+                const text = newEntryTextInput.value.trim();
+                if (text) {
+                    createEntry(text);
+                    newEntryTextInput.value = '';
+                }
+            });
+            newEntryTextInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') addEntryBtn.click();
+            });
+
+            // --- DRAG AND DROP ---
+            document.addEventListener('dragstart', e => {
+                if (e.target.classList.contains('entry')) {
+                    draggedItem = e.target;
+                    setTimeout(() => e.target.style.display = 'none', 0);
+                }
+            });
+
+            document.addEventListener('dragend', e => {
+                if (draggedItem) {
+                    setTimeout(() => {
+                        draggedItem.style.display = 'flex';
+                        draggedItem = null;
+                    }, 0);
+                }
+            });
+
+            document.addEventListener('dragover', e => {
+                e.preventDefault();
+            });
+
+            document.addEventListener('drop', e => {
+                e.preventDefault();
+                if (!draggedItem) return;
+
+                const dropZone = e.target.closest('.tier-row > div:last-child, #unranked-entries');
+                if (!dropZone) return;
+
+                const targetEntry = e.target.closest('.entry');
+
+                // If dropped on another entry (and it's not the one being dragged)
+                if (targetEntry && targetEntry !== draggedItem) {
+                    const rect = targetEntry.getBoundingClientRect();
+                    // Check if the drop location is in the right half of the target entry
+                    const isAfter = e.clientX > rect.left + rect.width / 2;
+
+                    if (isAfter) {
+                        targetEntry.parentNode.insertBefore(draggedItem, targetEntry.nextSibling);
+                    } else {
+                        targetEntry.parentNode.insertBefore(draggedItem, targetEntry);
+                    }
+                } else {
+                    // If dropped in the container's empty space or on itself, append to the end
+                    dropZone.appendChild(draggedItem);
+                }
+            });
+
+
+            // Image Drop
+            unrankedEntriesContainer.addEventListener('dragover', (e) => e.preventDefault());
+            unrankedEntriesContainer.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (draggedItem) return;
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    for(const file of files) {
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                                createEntry(event.target.result);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    }
+                }
+            });
+
+            // --- CONTEXT MENUS & MODALS ---
+            function showTierContextMenu(x, y, tierLabel) {
+                const tierId = tierLabel.dataset.tierId;
+                const tierRow = document.getElementById(tierId);
+
+                contextMenu.innerHTML = `
+                    <div class="p-2">
+                        <label class="text-xs text-gray-400">Tier Name</label>
+                        <input type="text" id="tier-name-input" value="${tierLabel.textContent}" class="w-full bg-gray-800 text-white rounded p-1 my-1 text-sm">
+                        <label class="text-xs text-gray-400">Color</label>
+                        <input type="color" id="tier-color-input" value="${rgbToHex(tierLabel.style.backgroundColor)}" class="w-full h-8 p-0 border-none rounded my-1 cursor-pointer">
+                        <button id="save-tier-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-1 px-2 rounded mt-2">Save</button>
+                        <button id="remove-tier-btn" class="w-full bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-1 px-2 rounded mt-1">Remove Tier</button>
+                    </div>
+                `;
+                contextMenu.style.left = `${x}px`;
+                contextMenu.style.top = `${y}px`;
+                contextMenu.style.display = 'block';
+
+                document.getElementById('save-tier-btn').onclick = () => {
+                    const newName = document.getElementById('tier-name-input').value;
+                    const newColor = document.getElementById('tier-color-input').value;
+                    tierLabel.textContent = newName;
+                    tierLabel.style.backgroundColor = newColor;
+                    hideContextMenu();
+                };
+                 document.getElementById('remove-tier-btn').onclick = () => {
+                    showConfirmationModal(`Are you sure you want to remove the "${tierLabel.textContent}" tier?`, () => {
+                        tierRow.remove();
+                    });
+                    hideContextMenu();
+                };
+            }
+
+            function hideContextMenu() {
+                contextMenu.style.display = 'none';
+            }
+
+            function showConfirmationModal(message, onConfirm) {
+                modalTitle.textContent = 'Confirm Action';
+                modalMessage.textContent = message;
+                cancelBtn.style.display = 'inline-block';
+                confirmBtn.textContent = 'Confirm';
+                confirmationModal.style.display = 'flex';
+                confirmBtn.onclick = () => {
+                    onConfirm();
+                    hideConfirmationModal();
+                };
+            }
+
+            function showAlertModal(message) {
+                modalTitle.textContent = 'Notification';
+                modalMessage.textContent = message;
+                cancelBtn.style.display = 'none';
+                confirmBtn.textContent = 'OK';
+                confirmationModal.style.display = 'flex';
+                confirmBtn.onclick = hideConfirmationModal;
+            }
+
+            function hideConfirmationModal() {
+                 confirmationModal.style.display = 'none';
+            }
+
+            cancelBtn.addEventListener('click', hideConfirmationModal);
+            document.addEventListener('click', (e) => {
+                if (!contextMenu.contains(e.target)) hideContextMenu();
+            });
+
+            // --- DATA IMPORT/EXPORT ---
+            saveDataBtn.addEventListener('click', () => {
+                const tierRows = tierListContainer.querySelectorAll('.tier-row');
+                const tiersData = Array.from(tierRows).map(row => {
+                    const label = row.querySelector('div:first-child');
+                    return {
+                        name: label.textContent,
+                        color: rgbToHex(label.style.backgroundColor)
+                    };
+                });
+
+                const allEntries = document.querySelectorAll('.entry');
+                const entriesData = Array.from(allEntries).map(entry => ({
+                    content: entry.dataset.content
+                }));
+
+                const saveData = {
+                    tiers: tiersData,
+                    entries: entriesData
+                };
+
+                const jsonString = JSON.stringify(saveData, null, 2);
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'tierlist-data.json';
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+
+            importDataInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+
+                        if (data && typeof data === 'object' && !Array.isArray(data) && data.tiers && data.entries) {
+                            tierListContainer.innerHTML = '';
+                            unrankedEntriesContainer.innerHTML = '';
+                            data.tiers.forEach(tier => createTierRow(tier.name, tier.color));
+                            data.entries.forEach(item => {
+                                if(item.content) createEntry(item.content);
+                            });
+                        }
+                        else if (Array.isArray(data)) {
+                             unrankedEntriesContainer.innerHTML = '';
+                             data.forEach(item => {
+                                 if (item.content) createEntry(item.content);
+                             });
+                             showAlertModal('Entries loaded successfully. Tier configurations were not found in this file (old format).');
+                        } else {
+                            showAlertModal('Invalid JSON file format.');
+                        }
+                    } catch (error) {
+                        showAlertModal('Error parsing JSON file.');
+                        console.error(error);
+                    }
+                };
+                reader.readAsText(file);
+                e.target.value = null;
+            });
+
+            exportImageBtn.addEventListener('click', () => {
+                const controls = document.querySelector('.my-6');
+                const unrankedSection = document.querySelector('.mt-8');
+                controls.style.display = 'none';
+                unrankedSection.style.display = 'none';
+
+                html2canvas(document.getElementById('app'), { // Capture entire app for better context
+                    backgroundColor: '#111827',
+                    scale: 2
+                }).then(canvas => {
+                    const a = document.createElement('a');
+                    a.href = canvas.toDataURL('image/png');
+                    a.download = 'tier-list.png';
+                    a.click();
+                    controls.style.display = 'grid';
+                    unrankedSection.style.display = 'block';
+                }).catch(err => {
+                    console.error("Error exporting image:", err);
+                    showAlertModal("Sorry, an error occurred while exporting the image.");
+                    controls.style.display = 'grid';
+                    unrankedSection.style.display = 'block';
+                });
+            });
+
+            // --- UTILITY ---
+            function rgbToHex(rgb) {
+                if (!rgb || rgb.indexOf('rgb') === -1) return '#ffffff';
+                let sep = rgb.indexOf(",") > -1 ? "," : " ";
+                rgb = rgb.substr(4).split(")")[0].split(sep);
+                let r = (+rgb[0]).toString(16),
+                    g = (+rgb[1]).toString(16),
+                    b = (+rgb[2]).toString(16);
+                if (r.length == 1) r = "0" + r;
+                if (g.length == 1) g = "0" + g;
+                if (b.length == 1) b = "0" + b;
+                return "#" + r + g + b;
+            }
+
+            // --- INITIALIZE APP ---
+            initializeTiers();
+        });
+    </script>
+</body>
+</html>

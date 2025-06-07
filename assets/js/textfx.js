@@ -93,7 +93,7 @@ function initializeWavyText(elements) {
             phases.push((index * Math.PI) / 8); 
         });
 
-        const amplitude = 0.08;
+        const amplitude = 0.1;
         const frequency = 2;
 
         function easingFormula(t) {
